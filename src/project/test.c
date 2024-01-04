@@ -35,7 +35,6 @@ int test(void)
     while (1)
     {
         printf("");
-        test();
     }
     
     return 0;

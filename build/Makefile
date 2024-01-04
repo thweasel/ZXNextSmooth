@@ -1,7 +1,7 @@
 TARGET_EXEC ?= program.bin
 
 BUILD_DIR ?= ./bin
-SRC_DIRS ?= ../src 
+SRC_DIRS ?= ../src
 
 CC=zcc
 
@@ -10,9 +10,10 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 # zcc +zxn ../main.c -v -clib=new -create-app -subtype=nex -startup=5 -O2
-CFLAGS=+zxn -v -clib=new -O3 
-LDFLAGS=-startup=5 -pragma-include:../zpragma.inc -create-app -subtype=nex
+CFLAGS=+zxn -vn -clib=new -compiler=sccz80 -O3 
+LDFLAGS=-startup=5 -pragma-include:$(SRC_DIRS)/project/zpragma.inc -create-app -subtype=nex
 
+# COMPILER OPTIONS -compiler=sccz80 -compiler=sdcc
 
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
