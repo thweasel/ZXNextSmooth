@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rm ./bin/*
-rm ./src/*
+rm -fr ./bin/*
+rm -fr ./src/*
 
 make
 
