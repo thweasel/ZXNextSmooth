@@ -7,12 +7,11 @@
 // PATH FOLLOWS FROM WHERE THIS FILE HAS BEEN LINKED FROM
 
 // GRAPHICS
-#include "../ZXNextSmooth_lib/graphics/graphics.h"
-//#include "../ZXNextSmooth_lib/graphics/include/palette.h"
+#include "graphics/graphics.h"
+
 
 // HARDWARE
-//#include "../ZXNextSmooth_lib/hardware/include/NextHardware.h"
-#include "../ZXNextSmooth_lib/hardware/hardware.h"
+#include "hardware/hardware.h"
 
 
 #endif
