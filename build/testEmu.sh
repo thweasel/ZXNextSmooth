@@ -2,9 +2,9 @@
 
 ./makeFresh.sh
 
-./bash_scripts/prepEmulatorSDimage.sh \
+../bash_scripts/prepEmulatorSDimage.sh \
 -i /home/owen/bin/CSpect/tbblue.mmc \
--p ./bin/ \
+-p ../build/bin/ \
 -n program.nex \
 -d /
 
