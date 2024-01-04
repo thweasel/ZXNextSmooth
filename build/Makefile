@@ -1,7 +1,7 @@
-TARGET_EXEC ?= program
+TARGET_EXEC ?= program.bin
 
-BUILD_DIR ?= ./tempbuild
-SRC_DIRS ?= ../src ../ZXNextSmooth_lib
+BUILD_DIR ?= ./bin
+SRC_DIRS ?= ../src 
 
 CC=zcc
 
@@ -9,8 +9,9 @@ SRCS := $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-CFLAGS=+zxn
-LDFLAGS=-O2 -pragma-include:zpragma.inc -create-app -subtype=nex
+# zcc +zxn ../main.c -v -clib=new -create-app -subtype=nex -startup=5 -O2
+CFLAGS=+zxn -v -clib=new -O3 
+LDFLAGS=-startup=5 -pragma-include:../zpragma.inc -create-app -subtype=nex
 
 
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)

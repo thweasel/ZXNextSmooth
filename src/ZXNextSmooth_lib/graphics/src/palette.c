@@ -1,13 +1,13 @@
-#ifndef PALETTE_H
-#define PALETTE_H
+#define DEBUG_ON
+#include "../../general/include/debugging.h"
 
-#include <arch/zxn.h>
+#include "../../general/Z88dkDeps.h"
+#include "../../hardware/hardware.h"
+#include "../../general/include/smartStrings.h"
 
+#include "../include/paletteStructures.h"
+#include "../include/colour8arrays.h"
 
-#include "colour8arrays.h"
-
-#include "../hardware/NextHardware.h"
-#include "../smartStrings.h"
 
 // NEXT registers are accessed via IO ports
 // IO_NEXTREG_REG & IO_NEXTREG_DAT
@@ -40,17 +40,6 @@ ULANext full-ink mode
 */
 #define NEXTREG_PaletteIndex 0x40
 
-#define COLOURARRAYSIZE_ClassicULA 8
-struct paletteDef_ClassicULA
-{
-    // A ULA paletteDef contains 32 RGB bytes for Inks, BrightInks, Papers and BrightPapers
-    // Border uses the paper colours
-    uint8_t Inks[COLOURARRAYSIZE_ClassicULA];
-    uint8_t BrightInks[COLOURARRAYSIZE_ClassicULA];
-    uint8_t Papers[COLOURARRAYSIZE_ClassicULA];
-    uint8_t BrightPapers[COLOURARRAYSIZE_ClassicULA];
-};
-
 void classicULApaletteToConsole(struct paletteDef_ClassicULA *paletteDef)
 {
     printf("\nInks   : bInks  : Paper  : bPaper\n");
@@ -65,18 +54,16 @@ void classicULApaletteToConsole(struct paletteDef_ClassicULA *paletteDef)
     return;
 }
 
-#define COLOURARRAYSIZE_ULAplus 64
-struct paletteDef_ULAplus
-{
-    uint8_t Inks[COLOURARRAYSIZE_ULAplus];
-    uint8_t Papers[COLOURARRAYSIZE_ULAplus]; // Placed in Transparency Colour Fallback 0x4A
-};
+
 
 /* Palatte Value 0x41
     8 bit colours RRRGGGBB
     B3 is OR of B1 and B0
 */
 #define NEXTREG_PaletteValue 0x41 // Colour data value (8-bit colour)
+
+
+
 
 /* Enhanced ULA Ink Colour Mask 0x42
     Bit Effect 7-0 The number for last ink colour entry in the palette.
@@ -112,10 +99,6 @@ Bit Effect
 0   Enables ULANext mode if 1 (0 after reset)
 */
 #define NEXTREG_EnhancedULAControl 0x43 // Select the active pallet for display or editing for ULA, Layer 2 and Sprites
-
-typedef uint8_t palettefirstORsecond;
-#define FIRSTPALETTE (palettefirstORsecond) 0
-#define SECONDPALETTE (palettefirstORsecond) 1
 
 typedef uint8_t paletteselectmask;
 #define MASKOFF_PALETTESELECT_CLEAR (paletteselectmask)0b10001111
@@ -153,7 +136,7 @@ typedef uint8_t autoinc;
 #define AUTOINC_OFF (autoinc) 0
 #define MASKOFF_PaletteIndexAutoInc !RPC_DISABLE_AUTOINC // 0b01111111
 #define MASKON_PaletteIndexAutoInc RPC_DISABLE_AUTOINC // 0b10000000
-void setPaletteIndexAutoInc(autoinc enable)
+static void setPaletteIndexAutoInc(autoinc enable)
 { // If enabled the palette index is automatically incremented on each write to palette value register
     DEBUG_FUNCTIONCALL("\nsetPaletteIndexAutoInc(enable %u)", enable);
     if (enable == AUTOINC_ON)
@@ -168,7 +151,7 @@ void setPaletteIndexAutoInc(autoinc enable)
     }
 }
 
-void selectPalette(paletteselectmask paletteSelectMask)
+static void selectPalette(paletteselectmask paletteSelectMask)
 {
     DEBUG_FUNCTIONCALL("\nselectPalette(paletteSelectMask %s)", byteAsBinaryString(paletteSelectMask));
 
@@ -177,7 +160,7 @@ void selectPalette(paletteselectmask paletteSelectMask)
     return;
 }
 
-void setPaletteValues(uint8_t *values, uint8_t size, uint8_t startIndex)
+static void setPaletteValues(uint8_t *values, uint8_t size, uint8_t startIndex)
 {
     DEBUG_FUNCTIONCALL("\nsetPaletteValues(*values, size %u, startIndex%u)", size, startIndex);
 
@@ -187,7 +170,7 @@ void setPaletteValues(uint8_t *values, uint8_t size, uint8_t startIndex)
     return;
 }
 
-uint8_t getPaletteValue(uint8_t atIndex)
+static getPaletteValue(uint8_t atIndex)
 {
     DEBUG_FUNCTIONCALL("\n\ngetPaletteValue(atIndex %u)", atIndex);
 
@@ -195,7 +178,7 @@ uint8_t getPaletteValue(uint8_t atIndex)
     return get_NEXTREGvalue(NEXTREG_PaletteValue);
 }
 
-void setClassicULAPalette(struct paletteDef_ClassicULA *paletteDef, palettefirstORsecond firstORsecond)
+void setClassicULAPalette(struct paletteDef_ClassicULA *paletteDef, FIRST_SECOND_PALETTE firstORsecond)
 {
     /* Enhanced ULA Control 0x43
         6-4 Selects palette for read or write
@@ -245,4 +228,4 @@ void setULAplusPalette(struct paletteDef_ULAplus *paletteDef, uint8_t firstORsec
     
 }
 
-#endif
+

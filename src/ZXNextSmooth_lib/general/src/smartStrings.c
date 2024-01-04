@@ -1,10 +1,9 @@
-#ifndef smartStrings_h
-#define smartStrings_h
+#define DEBUG_ON
+#include "../../general/include/debugging.h"
 
-#include <stdint.h>
-#include <stdio.h>
+#include "../../general/Z88dkDeps.h"
 
-static char byteBinaryString[10]= "b00000000";
+char byteBinaryString[10]= "b00000000";
 
 char * byteAsBinaryString(uint8_t byte)
 {
@@ -27,5 +26,3 @@ void binaryToConsole(uint8_t byte)
 {
     printf("%s", byteAsBinaryString(byte));
 }
-
-#endif

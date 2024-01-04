@@ -1,5 +1,5 @@
-#ifndef COLOUR8ARRAY_H
-#define COLOUR8ARRAY_H
+#ifndef colour8array_h
+#define colour8array_h
 
 #include <arch/zxn/color.h>
 

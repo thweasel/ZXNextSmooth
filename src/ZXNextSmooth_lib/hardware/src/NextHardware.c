@@ -1,16 +1,10 @@
-#ifndef nextHardware_h
-#define nextHardware_h
-
-#include <stdint.h>
-#include <arch/zxn.h>
-
-#include "../smartStrings.h"
-
-//
-// DEBUGGING
-//
 #define DEBUG_ON
-#include "../debugging.h"
+#include "../../general/include/debugging.h"
+
+#include "../../general/Z88dkDeps.h"
+#include "../../general/include/smartStrings.h"
+
+
 
 
 void nextregToConsole(uint8_t REG, uint8_t DAT)
@@ -101,4 +95,4 @@ void showNEXTREGonConsole(uint8_t REG)
 }
 
 #undef DEBUG_ON
-#endif
+
