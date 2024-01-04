@@ -1,1 +1,5 @@
 .vscode/
+build/bin/
+build/src/
+
+
