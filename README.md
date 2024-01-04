@@ -20,29 +20,26 @@ Configure the pragmas for your project here
 
 The main file for your project
 
-## /src/
-Put your .C files in here
-
-## /include/
-Put your .H files in here
-
 ## /assets/
 Put none code files in here, music, pictures, binary blobs etc...
 
 ## /build/
 This is where the make stuff will happen
 
-## /library/
+## /src/
+Source code
+
+## /src/project/
+Put your .C files in here
+
+## /src/project/include/
+Put your .H files in here
+
+
+## /src/ZXNextSmooth_lib
 
 The library files, you only need to add ZXNextSmooth.h in main.c you should stayout of here unless you are updating the library...
 
-### /library/src/
-
-.C source files for the library
-
-### /library/include/
-
-.H header files for the library
 
 # Important patterns
 
