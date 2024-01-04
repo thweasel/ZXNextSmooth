@@ -9,9 +9,11 @@
 // GRAPHICS
 #include "graphics/graphics.h"
 
-
 // HARDWARE
 #include "hardware/hardware.h"
+
+// DRIVERS
+#include "nextZXOSdrivers/export_nextZXOSdrivers.h"
 
 
 #endif
