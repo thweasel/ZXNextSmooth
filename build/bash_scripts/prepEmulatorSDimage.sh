@@ -48,15 +48,18 @@ printf "\n\tProgram Name: $programname";
 printf "\n\tDestination in SDImage: $sddestpath";
 printf "\n"
 
+hdfmonkeyrm="hdfmonkey rm $sdimage $sddestpath$programname"
 printf "\n  Removing $sddestpath$programname from $sdimage"
-printf "\n\t>> hdfmonkey rm $sdimage $sddestpath$programname"
-printf "\n\t>> $(hdfmonkey rm $sdimage $sddestpath$program)"
+printf "\n\t>> $hdfmonkeyrm"
+printf "\n\t<< $($hdfmonkeyrm)"
 
 printf "\n"
 
+hfdmonkeyput="hdfmonkey put $sdimage $programpath$programname $sddestpath$program"
 printf "\n  Adding $sddestpath$programname from $sdimage"
-printf "\n\t>> hdfmonkey put $sdimage $programpath$programname  $sddestpath$programname"
-printf "\n\t>> $(hdfmonkey put $sdimage $programpath$programname $sddestpath$program)"
+
+printf "\n\t>> $hfdmonkeyput"
+printf "\n\t<< $($hfdmonkeyput)"
 
 
 printf "\n\n === SUCCESS === \n\n"
