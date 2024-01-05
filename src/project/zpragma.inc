@@ -16,8 +16,8 @@
 // Stack location
 
 // Terminal
-#pragma need=ansiterminal
-#pragma define ansicolumns=64
+//#pragma need=ansiterminal
+//#pragma define ansicolumns=64
 
 //#pragma redirect ansifont=
 //#pragma ansifont_is_packed=0
