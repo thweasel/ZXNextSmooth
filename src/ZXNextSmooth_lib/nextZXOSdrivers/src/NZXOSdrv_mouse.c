@@ -54,8 +54,8 @@ void mouseInstallDriver(void)
 {
     DEBUG_FUNCTIONCALL("\nmouseInstallDriver(void)");
     DEBUG_MSG("\ninstall mouse> %s  ", &CMDLINE_installmouse);
-    uint16_t result = esx_m_execcmd(&CMDLINE_installmouse);
-    esx_m_geterr(result, &CMDLINE_installmouse);
+    uint16_t result = esx_m_execcmd(CMDLINE_installmouse);
+    esx_m_geterr(result, CMDLINE_installmouse);
     printf("\nresult> %u, %s", result, &CMDLINE_installmouse);
 
     // Driver replies in the structure, so you need to re-populate before calling again
@@ -78,7 +78,7 @@ void mouseEnableAttributeCursor(uint8_t attributeValue)
     driverApi.de = 0;
 
     uint8_t result = esx_m_drvapi(&driverApi);
-    esx_m_geterr(result, &CMDLINE_installmouse);
+    esx_m_geterr(result, CMDLINE_installmouse);
     DEBUG_MSG("\n esx_m_drvapi(driverApi) ,%u %s", result, &CMDLINE_installmouse);
     driverApiToConsole(&driverApi);
 
@@ -97,7 +97,7 @@ struct mouseState * mouseGetState(void)
     driverApi.hl = 0;
 
     uint8_t result = esx_m_drvapi(&driverApi);
-    esx_m_geterr(result, &CMDLINE_installmouse);
+    esx_m_geterr(result, CMDLINE_installmouse);
     DEBUG_MSG("\n esx_m_drvapi(driverApi) ,%u %s", result, &CMDLINE_installmouse);
     driverApiToConsole(&driverApi);
 

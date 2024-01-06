@@ -2,7 +2,7 @@
 #include "../../general/include/debugging.h"
 
 #include "../../general/Z88dkDeps.h"
-#include "../../hardware/hardware.h"
+#include "../../hardware/export_hardware.h"
 #include "../../general/include/smartStrings.h"
 
 #include "../include/paletteStructures.h"
