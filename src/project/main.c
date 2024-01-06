@@ -17,8 +17,8 @@ int main(int argc, char const *argv[])
     puts("\x4\x1");
     */
    
-   ioctl(1,IOCTL_OTERM_PAUSE,0); // Scroll like a normal console
-
+    //ioctl(1,IOCTL_OTERM_PAUSE,0); // Scroll like a normal console
+    TERMINAL_FUNC_PAUSEONSCROLL_DISABLE;
    
 
 
@@ -37,6 +37,10 @@ int main(int argc, char const *argv[])
 
         printf("\n%d",i++);
         //z80_delay_ms(50);
+        if (i > 100)
+        {
+            TERMINAL_FUNC_PAUSEONSCROLL_ENABLE;
+        }
     }
 
     // test();
