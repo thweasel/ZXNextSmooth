@@ -1,0 +1,93 @@
+#define DEBUG_ON
+#include "../../general/include/debugging.h"
+#include "../../general/Z88dkDeps.h"
+
+#include "../include/esxdos_drvapi.h"
+#include "../include/esxdos_drvapi_mouse.h"
+
+// This struct is used to send driver calls and returns with driver results
+#define STRINGBUFFERSIZE (uint8_t) 33
+char mouseStringBuffer[STRINGBUFFERSIZE] = "";
+extern struct esx_drvapi driverApiMsg;
+
+#define MOUSEDRV_DRIVERID (uint8_t) 126
+#define MOUSEDRV_FUNCTION_GETMOUSESTATE (uint8_t) 1
+#define MOUSEDRV_FUNCTION_SETCURSORSPRITE (uint8_t) 2
+#define MOUSEDRV_FUNCTION_DISABLECURSORSPRITE (uint8_t) 3
+#define MOUSEDRV_FUNCTION_SETCURSORATTRIBUTE (uint8_t) 4
+#define MOUSEDRV_FUNCTION_DISABLECURSORATTRIBUTE (uint8_t) 5
+#define MOUSEDRV_FUNCTION_XACCELLERATION (uint8_t) 6
+
+extern struct mouseState currentMouseState = {
+    .errorCode = 255,
+    .x = 0,
+    .y = 0,
+    .button1 = false,
+    .button2 = false,
+    .wheelpos = 0,
+};
+
+void mouseStateToConsole(struct mouseState * theMouseState)
+{
+    DEBUG_FUNCTIONCALL("\nmouseStateToConsole(theMouseState *%02x)",theMouseState);
+
+    printf("\nMOUSE STATE: errorCode %u \n x %03d , y %03d , b1 %01u , b2 %01u , wheelpos %02u ",
+           theMouseState->errorCode,
+           theMouseState->x,
+           theMouseState->y,
+           theMouseState->button1,
+           theMouseState->button2,
+           theMouseState->wheelpos);
+    return;
+}
+
+// The .INSTALL command requires either a relative path or absolute path in "C:/nextzxos/driver.drv"
+//static char CMDLINE_installmouse[33] = "install \"c:/nextzxos/mouse.drv\"";
+
+void mouseInstallDriver(void)
+{
+    DEBUG_FUNCTIONCALL("\nmouseInstallDriver()");
+    if ( 0 == installDriver("mouse.drv") )
+    {
+        currentMouseState.errorCode = 0;
+        return;
+    }
+    DEBUG_MSG("\n MOUSE driver install failed %u", currentMouseState.errorCode);
+    return;
+}
+
+void mouseEnableAttributeCursor(uint8_t attributeValue)
+{
+    DEBUG_FUNCTIONCALL("\nmouseEnableAttributeCursor(attributeValue %s)",byteAsBinaryString(attributeValue));
+    
+    // Driver replies in the structure, so you need to re-populate before calling again
+    driverApiMsg.call.driver = MOUSEDRV_DRIVERID;
+    driverApiMsg.call.function = MOUSEDRV_FUNCTION_SETCURSORATTRIBUTE;
+    driverApiMsg.hl = 0b11100111; // Attribute;
+    driverApiMsg.de = 0;
+
+    currentMouseState.errorCode = safe_callDriverApiErrorMsg(driverApiMsg,mouseStringBuffer);
+
+    return;
+}
+
+struct mouseState * mouseGetState(void)
+{
+    DEBUG_FUNCTIONCALL("\nmouseGetState()");
+    
+    // Driver replies in the structure, so you need to re-populate before calling again
+    driverApiMsg.call.driver = MOUSEDRV_DRIVERID;
+    driverApiMsg.call.function = MOUSEDRV_FUNCTION_GETMOUSESTATE;
+    driverApiMsg.de = 0;
+    driverApiMsg.hl = 0;
+
+    currentMouseState.errorCode = safe_callDriverApiErrorMsg(driverApiMsg,mouseStringBuffer);
+    
+    currentMouseState.x = driverApiMsg.de;
+    currentMouseState.y = driverApiMsg.hl;
+    currentMouseState.button1 = true;
+    currentMouseState.button2 = true;
+    currentMouseState.wheelpos = 15;   
+
+    return &currentMouseState;
+}

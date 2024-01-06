@@ -1,7 +1,6 @@
 #include "include/global.h"
 
 #include "include/test.h"
-#include <sys/ioctl.h>
 #include <z80.h>
 
 int main(int argc, char const *argv[])
@@ -11,18 +10,8 @@ int main(int argc, char const *argv[])
     zx_cls_attr(PAPER_WHITE);
     zx_cls_pix(INK_BLACK);
 
-    /*
-    puts("\x1B[?4h");
-    puts("\x1Bs");
-    puts("\x4\x1");
-    */
-   
-    //ioctl(1,IOCTL_OTERM_PAUSE,0); // Scroll like a normal console
     TERMINAL_FUNC_PAUSEONSCROLL_DISABLE;
    
-
-
-
     mouseInstallDriver();
     mouseEnableAttributeCursor(1);
 

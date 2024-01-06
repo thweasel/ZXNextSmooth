@@ -5,10 +5,12 @@
 #define DEBUG_MSG printf
 #define DEBUG_FUNCTIONCALL printf
 #define DEBUG_NEXTREG debugNEXTREGtoConsole
+#define DEBUG_DRIVERAPI driverApiToConsole
 #else
-#define DEBUG_MSG //DEBUG_OFF 
-#define DEBUG_FUNCTIONCALL //DEBUG_OFF
-#define DEBUG_NEXTREG //DEBUG_OFF  
+#define DEBUG_MSG // printf 
+#define DEBUG_FUNCTIONCALL // printf
+#define DEBUG_NEXTREG // debugNEXTREGtoConsole  
+#define DEBUG_DRIVERAPI // driverApiCallToConsole
 #endif
 
 #endif

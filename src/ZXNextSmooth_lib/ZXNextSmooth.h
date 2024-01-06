@@ -6,6 +6,10 @@
 
 // PATH FOLLOWS FROM WHERE THIS FILE HAS BEEN LINKED FROM
 
+// GENERAL
+
+#include "general/include/smartStrings.h"
+
 // GRAPHICS
 #include "graphics/export_graphics.h"
 
@@ -13,7 +17,7 @@
 #include "hardware/export_hardware.h"
 
 // DRIVERS
-#include "nextZXOSdrivers/export_nextZXOSdrivers.h"
+#include "esxdos_drvapi/export_esxdos_drvapi.h"
 
 // TERMINAL
 #include "terminal/export_terminal.h"
