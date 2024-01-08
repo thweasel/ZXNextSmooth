@@ -4,9 +4,10 @@
 #include <z80.h>
 
 
-
+// Dec these here Def them down the bottom.
 void bankTesting (void);
 void mouseTesting (void);
+void espatTesting (void);
 
 
 int main(int argc, char const *argv[])
@@ -20,12 +21,22 @@ int main(int argc, char const *argv[])
 
     TERMINAL_FUNC_PAUSEONSCROLL_DISABLE;
 
-    bankTesting();
+    espatTesting();
+
+    //bankTesting();
 
     // test();
     return 0;
 }
 
+
+void espatTesting (void)
+{
+    espatDriverInstall();
+
+
+    return;
+}
 
 void bankTesting (void)
 {

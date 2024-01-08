@@ -25,3 +25,9 @@
 
 */
 
+void espatDriverInstall (void)
+{
+    DEBUG_FUNCTIONCALL("espatDriverInstall(void)");
+    installDriver("ESPAT.drv");
+    return;
+}
