@@ -5,6 +5,15 @@
 #include "../include/esxdos_drvapi.h"
 #include "../include/esxdos_drvapi_mouse.h"
 
+/*
+    TO DO
+
+    - Sprite mouse enable/disable
+    - Attribute cursor disable
+    - Change accelleration
+
+*/
+
 // This struct is used to send driver calls and returns with driver results
 #define STRINGBUFFERSIZE (uint8_t) 33
 char mouseStringBuffer[STRINGBUFFERSIZE] = "";
@@ -16,7 +25,7 @@ extern struct esx_drvapi driverApiMsg;
 #define MOUSEDRV_FUNCTION_DISABLECURSORSPRITE (uint8_t) 3
 #define MOUSEDRV_FUNCTION_SETCURSORATTRIBUTE (uint8_t) 4
 #define MOUSEDRV_FUNCTION_DISABLECURSORATTRIBUTE (uint8_t) 5
-#define MOUSEDRV_FUNCTION_XACCELLERATION (uint8_t) 6
+#define MOUSEDRV_FUNCTION_ACCELLERATIONX (uint8_t) 6
 
 extern struct mouseState currentMouseState = {
     .errorCode = 255,
@@ -91,3 +100,6 @@ struct mouseState * mouseGetState(void)
 
     return &currentMouseState;
 }
+
+
+

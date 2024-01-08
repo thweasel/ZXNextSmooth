@@ -7,8 +7,10 @@
 // PATH FOLLOWS FROM WHERE THIS FILE HAS BEEN LINKED FROM
 
 // GENERAL
-
 #include "general/include/smartStrings.h"
+
+// MEMORY
+#include "memory/export_memory.h"
 
 // GRAPHICS
 #include "graphics/export_graphics.h"
