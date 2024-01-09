@@ -3,6 +3,7 @@
 #include "../../general/Z88dkDeps.h"
 
 #include "../include/esxdos_drvapi.h"
+#include "../../memory/export_memory.h"
 
 /*
 
@@ -20,14 +21,55 @@
         B=8: Get ESP Link ID from handle
         B=9: Specific UART BAUD rate to be set from lookup table.
         B=10: Set output buffer mode for channel
+        B=11: enable/disable embedded IPD detect
 
     https://gitlab.com/thesmog358/tbblue/-/blob/master/docs/extra-hw/wifi/ESPATreadme.TXT
 
 */
 
-void espatDriverInstall (void)
+
+# define espat_DRVID (uint8_t) 78 // 'N'
+# define espat_DRVFUNC_SETMEMBANK (uint8_t) 1
+
+static uint8_t memoryBank=0;
+static struct esx_drvapi espat_drvapi;
+
+
+
+
+
+void espat_setMemoryBank(void)
+{   // This is going to be deprecated in BETA1 / RC1
+
+    DEBUG_FUNCTIONCALL("\nespat_setMemoryBank(void)");
+
+    // We need 2 8K banks consecutively (16K), double grab and store the second bank ID
+    allocateManagedBank();
+    memoryBank = allocateManagedBank();
+
+    DEBUG_MSG("\nespat memoryBank=%03u",memoryBank);
+
+    espat_drvapi.call.driver = espat_DRVID;
+    espat_drvapi.call.function = espat_DRVFUNC_SETMEMBANK;
+    espat_drvapi.de = 0;
+    espat_drvapi.hl = memoryBank;
+
+    safe_callDriverApi(&espat_drvapi);
+
+    printf("\ndrvapi H,L: 0x%04x",espat_drvapi.hl);
+
+    return;
+}
+
+void espat_DriverInstall (void)
 {
     DEBUG_FUNCTIONCALL("espatDriverInstall(void)");
     installDriver("ESPAT.drv");
+    espat_setMemoryBank();
     return;
+}
+
+void espat_OpenConnection (void)
+{
+
 }

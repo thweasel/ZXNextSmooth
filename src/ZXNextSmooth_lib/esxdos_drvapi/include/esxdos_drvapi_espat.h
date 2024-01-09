@@ -3,6 +3,6 @@
 
 #include "../../general/Z88dkDeps.h"
 
-void espatDriverInstall (void);
+void espat_DriverInstall (void);
 
 #endif

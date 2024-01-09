@@ -39,7 +39,7 @@ uint8_t allocateManagedBank(void)
         return 0;
     }
     bankAllocationsToConsole();
-    return managedBanks[managedBanksAllocated];
+    return managedBanks[(managedBanksAllocated-1)];
 }
 
 void allocateAllManagedBanks()

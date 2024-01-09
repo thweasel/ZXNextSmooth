@@ -32,7 +32,7 @@ int main(int argc, char const *argv[])
 
 void espatTesting (void)
 {
-    espatDriverInstall();
+    espat_DriverInstall();
 
 
     return;
