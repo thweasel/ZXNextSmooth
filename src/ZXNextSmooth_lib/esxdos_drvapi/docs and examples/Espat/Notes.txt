@@ -1,0 +1,19 @@
+Yes that is correct the ESPATreadme.TXT is the driver in the Notes on item 4 it shows how to init the ESPAT from BASIC  - you need to replicate that really to use it.
+
+1
+
+.install /nextzxos/espat.drv
+PRINT "Installed ESPAT.DRV"
+BANK NEW %m: PRINT "ESPAT.SYS Load page ";%m
+LOAD "/nextzxos/espat.sys" BANK %m,0,exactlength (will fix file at 8192 for simples)
+DRIVER 78,1,%m:REM ensures DRV knows where SYS is and patches/initialises
+BANK NEW %b: PRINT "Allocating 1 buffer ";%b
+DRIVER 78,6,%b
+DRIVER 78,9,0 TO %p : PRINT "115K Baud - precaler ";%p
+DRIVER 78,3 : PRINT "IPD Driver started"
+
+I.e. the driver does not install ESPAT.SYS into a BANK you have to load that file.
+
+
+LOAD is nextreg $5x followed by fopen/fread/fclose
+DRIVER is IDE_DRIVER

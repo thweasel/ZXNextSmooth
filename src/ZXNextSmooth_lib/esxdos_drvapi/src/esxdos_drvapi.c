@@ -79,6 +79,15 @@ uint16_t uninstallDriver(char *driverName)
     return driverFileAction(driverName, DRIVERFILEACTION_UNLOAD);
 }
 
+uint8_t DUMMY_callDriverApi(struct esx_drvapi *driverApiCall)
+{
+    DEBUG_FUNCTIONCALL("\nDUMMY_callDriverApi(*driverApiCall) ");
+    DEBUG_DRIVERAPI(driverApiCall, false);
+    int result = 0;//esx_m_drvapi(driverApiCall);
+    DEBUG_DRIVERAPI(driverApiCall, true);
+    return result;
+}
+
 uint8_t callDriverApi(struct esx_drvapi *driverApiCall)
 {
     DEBUG_FUNCTIONCALL("\ncallDriverApi(*driverApiCall) ");
@@ -107,7 +116,7 @@ uint8_t callDriverApiErrorMsg(struct esx_drvapi *driverApiCall, char *errorMsgBu
     DEBUG_DRIVERAPI(driverApiCall, true);
     
     esx_m_geterr(result, errorMsgBuffer);
-    DEBUG_MSG("\n esx_m_drvapi(driverApi) ,%u %s", result, errorMsgBuffer);
+    DEBUG_MSG("\n esx_m_drvapi(driverApi) << %u, %s", result, errorMsgBuffer);
     
     return result;
 }

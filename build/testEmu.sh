@@ -8,4 +8,4 @@
 -n program.nex \
 -d /
 
-mono "/home/owen/bin/CSpect/CSpect.exe" -w3 -zxnext -nextrom -basickeys -exit -tv -brk -emu -mmc=/home/owen/bin/CSpect/tbblue.mmc
+mono "/home/owen/bin/CSpect/CSpect.exe" -w3 -com="/dev/ttyUSB0:115200" -zxnext -nextrom -basickeys -exit -tv -brk -emu -mmc=/home/owen/bin/CSpect/tbblue.mmc

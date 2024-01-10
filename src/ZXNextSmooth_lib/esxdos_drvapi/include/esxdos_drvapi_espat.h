@@ -4,5 +4,6 @@
 #include "../../general/Z88dkDeps.h"
 
 void espat_DriverInstall (void);
+void espat_OpenConnection (void);
 
 #endif

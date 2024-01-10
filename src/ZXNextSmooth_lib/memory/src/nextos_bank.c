@@ -2,6 +2,8 @@
 #include "../../general/include/debugging.h"
 #include "../../general/Z88dkDeps.h"
 
+#include "../../hardware/export_hardware.h"
+
 #include "../include/nextos_bank.h"
 
 // Call IDE_BANK ($01bd) -- See NEXT OS API Docs
@@ -63,3 +65,32 @@ uint8_t reserveBank(bankType type, pageNumber page)
     return esx_ide_bank_reserve(bankType type, pageNumber page);
 }
 */
+
+void memory_MMUtoConsole(void)
+{
+    /*
+     printf("\n MMU REG0 %03u, MMU REG1 %03u,",get_NEXTREGvalue(REG_MMU0),get_NEXTREGvalue(REG_MMU1));
+     printf("\n MMU REG2 %03u, MMU REG3 %03u,",get_NEXTREGvalue(REG_MMU2),get_NEXTREGvalue(REG_MMU3));
+     printf("\n MMU REG4 %03u, MMU REG5 %03u,",get_NEXTREGvalue(REG_MMU4),get_NEXTREGvalue(REG_MMU5));
+     printf("\n MMU REG6 %03u, MMU REG7 %03u,",get_NEXTREGvalue(REG_MMU6),get_NEXTREGvalue(REG_MMU7));
+    */
+    
+    printf("\n MMU 0[%03u],1[%03u],2[%03u],3[%03u],4[%03u],5[%03u],6[%03u],7[%03u]",
+    ZXN_READ_MMU0(),
+    ZXN_READ_MMU1(),
+    ZXN_READ_MMU2(),
+    ZXN_READ_MMU3(),
+    ZXN_READ_MMU4(),
+    ZXN_READ_MMU5(),
+    ZXN_READ_MMU6(),
+    ZXN_READ_MMU7()
+    );
+    return;
+}
+
+void memory_MMUbankSwap(uint8_t mmuREG, uint8_t BankNumber)
+{
+    DEBUG_FUNCTIONCALL("\nmemory_swapMMUbank(mmuREG %03u ,BankNumber %03u)",mmuREG, BankNumber);
+    set_NEXTREGvalue(mmuREG, BankNumber);
+    return;
+}

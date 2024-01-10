@@ -5,6 +5,7 @@
 #include <arch/zxn/esxdos.h>
 #include <arch/zxn/color.h>
 #include <arch/zxn.h>
+#include <z80.h>
 
 #include <stdio.h>
 #include <stdint.h>

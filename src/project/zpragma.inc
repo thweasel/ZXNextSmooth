@@ -6,7 +6,8 @@
 // NEW LIB
 
 #pragma output CRT_ORG_CODE = 0x8000
-#pragma output REGISTER_SP = 0xBFE0
+//#pragma output REGISTER_SP = 0xBFE0
+#pragma output REGISTER_SP = 0xBB00
 
 // CLASSIC LIB
 
