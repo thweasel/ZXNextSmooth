@@ -7,6 +7,11 @@
 #include <arch/zxn.h>
 #include <z80.h>
 
+#include <errno.h>
+#include <intrinsic.h>
+
+
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
