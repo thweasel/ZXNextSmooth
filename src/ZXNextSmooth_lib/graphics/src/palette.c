@@ -170,7 +170,7 @@ static void setPaletteValues(uint8_t *values, uint8_t size, uint8_t startIndex)
     return;
 }
 
-static getPaletteValue(uint8_t atIndex)
+static uint8_t getPaletteValue(uint8_t atIndex)
 {
     DEBUG_FUNCTIONCALL("\n\ngetPaletteValue(atIndex %u)", atIndex);
 
@@ -223,9 +223,10 @@ struct paletteDef_ClassicULA *getClassicULAPalette(uint8_t firstORsecond, struct
     return returnPaletteDef;
 }
 
+/*
 void setULAplusPalette(struct paletteDef_ULAplus *paletteDef, uint8_t firstORsecond)
 {
-    
+    return;
 }
-
+*/
 
