@@ -4,7 +4,7 @@
 
 #include <arch/zxn/esxdos.h>
 
-struct esx_drvapi driverApiMsg;
+struct esx_drvapi driverApiMsg = {{0},0,0};;
 #define stringBufferSize 33
 char stringBuffer[stringBufferSize] = "";
 
@@ -109,7 +109,7 @@ uint8_t safe_callDriverApi(struct esx_drvapi *driverApiCall)
 
 uint8_t callDriverApiErrorMsg(struct esx_drvapi *driverApiCall, char *errorMsgBuffer)
 {
-    DEBUG_FUNCTIONCALL("\ncallDriverApi(*driverApiCall, *errorMsgBuffer) ");
+    DEBUG_FUNCTIONCALL("\ncallDriverApiErrorMsg(*driverApiCall, *errorMsgBuffer) ");
     DEBUG_DRIVERAPI(driverApiCall,false);
 
     uint8_t result = esx_m_drvapi(driverApiCall);

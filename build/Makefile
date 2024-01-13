@@ -10,8 +10,11 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 # zcc +zxn ../main.c -v -clib=new -create-app -subtype=nex -startup=5 -O2
-CFLAGS=+zxn -vn -clib=new -compiler=sccz80 -O3 
-LDFLAGS=-startup=5 -pragma-include:$(SRC_DIRS)/project/zpragma.inc -create-app -subtype=nex
+CFLAGS=+zxn -vn -clib=new -compiler=sccz80 -O2 
+
+#zcc +zx -vn -SO3 -startup=30 -clib=sdcc_iy --max-allocs-per-node200000 test.c -o test -create-app
+#CFLAGS=+zxn -vn -SO3 -clib=sdcc_iy --max-allocs-per-node20000
+LDFLAGS=-startup=5 -pragma-include:$(SRC_DIRS)/project/zpragma.inc -create-app -subtype=nex -m -lm
 
 # COMPILER OPTIONS -compiler=sccz80 -compiler=sdcc
 

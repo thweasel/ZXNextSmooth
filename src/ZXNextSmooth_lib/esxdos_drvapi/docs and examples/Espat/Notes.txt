@@ -15,5 +15,9 @@ DRIVER 78,3 : PRINT "IPD Driver started"
 I.e. the driver does not install ESPAT.SYS into a BANK you have to load that file.
 
 
+Basically call B=05 with Receive = 96 and send as 1024 I think fixed basic
+
+DRIVER 78,5,96,1024
+
 LOAD is nextreg $5x followed by fopen/fread/fclose
 DRIVER is IDE_DRIVER

@@ -52,9 +52,10 @@
 
 char streams [15] = "kksp";
 
-
+/*
 void openChannelOnStream (char channel, uint8_t streamNumber)
 {
 
     return;
 }
+*/

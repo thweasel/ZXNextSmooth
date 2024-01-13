@@ -5,7 +5,7 @@
 
 struct mouseState
 {
-    uint16_t errorCode;
+    uint8_t errorCode;
     uint16_t x;
     uint16_t y;
     bool button1;
