@@ -42,7 +42,7 @@ uint8_t allocateManagedBank(void)
     return managedBanks[(managedBanksAllocated-1)];
 }
 
-void allocateAllManagedBanks()
+void allocateAllManagedBanks(void)
 {
     for (uint8_t i = 0; i < maxBanks; i++)
     {
