@@ -4,7 +4,17 @@
 
 #include "../include/nextosBank.h"
 
-#define MAXBANKS (uint8_t)8
+/*  Simple 8 bank and BASIC bank manager
+
+    This is an example of a bank manager that tracks the requested banks from the OS.
+    The arrays containing the banks allocated are NOT to be confused with the MMU!
+    Once you have requested a bank from the OS you need to use the MMU to map it for access!
+
+    Banks are considered as 8K banks. 
+    BASIC banks are considered 16K banks which are always allocated from an EVEN Bank ID (lower 8K), and the bank above (upper 8K).
+*/
+
+#define MAXBANKS (uint8_t) 8
 
 static uint8_t BanksAllocated = 0;
 static uint8_t Banks[MAXBANKS] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -58,8 +68,6 @@ void manage8Banks_allocateAllBanks(void)
     {
         manage8Banks_allocateBank();   
     }
-
-
     return;
 }
 

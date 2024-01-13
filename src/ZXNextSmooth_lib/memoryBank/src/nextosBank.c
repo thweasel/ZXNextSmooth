@@ -9,7 +9,7 @@
 
     In this document the convention is:
         8KBank, Bank = native 8K bank ID
-        16Bank, BASIC-Bank = BASIC 16K bank ID
+        16Bank, BASIC Bank = BASIC 16K bank ID always allocated on an EVEN Bank ID (lower 8K), and the bank above (upper 8K)
 
     For BASIC compatability, there is a secondary 16K bank indexing scheme.
     BASIC 16K banks are allocated from an EVEN 8K bank ID and with the bank ID above making the upper 8K.
@@ -56,7 +56,7 @@ bankID nextos_allocateBank(bankType type)
     return esx_ide_bank_alloc(type);
 }
 
-
+// The API does not provide a way to request BASIC Banks in the way NEW BASIC requests them, so we have to emulate the process
 uint8_t nextos_reserveBasicBank(basicBankID id)
 { // allocate a specific BasicBankID, 0 = success, 255 = failure
     DEBUG_FUNCTIONCALL("\n nextos_reserveBasicBank(basicBankID %03u)", id);
