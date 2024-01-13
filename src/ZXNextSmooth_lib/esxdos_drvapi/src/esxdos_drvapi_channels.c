@@ -5,8 +5,7 @@
 #include "../include/esxdos_drvapi.h"
 
 
-/*
-    Channels are controlled using the driver api
+/*  Channels access is provided by some installable drivers, we can access them using the driver api
 
     ; The following calls are used to allow your driver to support 
     ; channels for i/o (manipulated with BASIC commands like OPEN #). 
