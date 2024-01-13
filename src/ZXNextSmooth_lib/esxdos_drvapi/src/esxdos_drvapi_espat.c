@@ -1,9 +1,11 @@
 #define DEBUG_ON
 #include "../../general/include/debugging.h"
-#include "../../general/Z88dkDeps.h"
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
+
+#include "../../memoryBank/export_memoryBank.h"
 
 #include "../include/esxdos_drvapi.h"
-#include "../../memory/export_memory.h"
+
 
 /*
 
@@ -114,8 +116,8 @@ void espat_loadEspatSys(void)
 {
     DEBUG_FUNCTIONCALL("\n\n espat_loadEspatSys(void) \n FILENAME>> %s", espat_sysfile);
 
-    // uint8_t memoryBankH = allocateManagedBank();
-    // uint8_t memoryBankL = allocateManagedBank();
+    // uint8_t memoryBankH = allocateManaged_Bank();
+    // uint8_t memoryBankL = allocateManaged_Bank();
 
     uint8_t memoryBankH = 221;
     uint8_t memoryBankL = 220;
@@ -179,8 +181,8 @@ void espat_addBufferMemoryBank(void)
     DEBUG_FUNCTIONCALL("\n\n espat_setMemoryBank(void)");
 
     // We need 2 8K banks consecutively (16K), double grab and store the second bank ID
-    // uint8_t memoryBankH = allocateManagedBank();
-    // uint8_t memoryBankL = allocateManagedBank();
+    // uint8_t memoryBankH = allocateManaged_Bank();
+    // uint8_t memoryBankL = allocateManaged_Bank();
 
     uint8_t memoryBankH = 219;
     uint8_t memoryBankL = 218;

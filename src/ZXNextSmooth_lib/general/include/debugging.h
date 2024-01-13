@@ -1,7 +1,6 @@
 #ifndef debugging_h
 #define debugging_h
-
-#include "../Z88dkDeps.h"
+#include "../ZXNextSmooths_Z88dkDeps.h"
 
 #ifdef DEBUG_ON
 #define DEBUG_MSG printf

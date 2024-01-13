@@ -1,8 +1,11 @@
 #ifndef esxdos_drv_h
 #define esxdos_drv_h
-#include "../../general/Z88dkDeps.h"
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
+#include "../../hardware/export_hardware.h"
 
 extern struct esx_drvapi driverApiMsg;
+extern struct esxdos_drvapi_REG driverApiReturnREG;
+extern char esxErrorMessageString[];
 
 extern void driverApiToConsole(struct esx_drvapi * showDriverApiCall);
 

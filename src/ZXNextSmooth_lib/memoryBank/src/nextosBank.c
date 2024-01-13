@@ -1,6 +1,6 @@
 #define DEBUG_OFF
 #include "../../general/include/debugging.h"
-#include "../../general/Z88dkDeps.h"
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 #include "../../hardware/export_hardware.h"
 
@@ -37,94 +37,77 @@ extern unsigned char __LIB__ esx_ide_bank_free(unsigned char banktype,unsigned c
 
 */
 
-int16_t totalBanks(bankType type)
+int16_t nextos_totalBanks(bankType type)
 { // return total number of (8K) banks in system
     return esx_ide_bank_total(type);
 }
 
-int16_t availableBanks(bankType type)
+int16_t nextos_availableBanks(bankType type)
 { // return number of available (8K) banks
     return esx_ide_bank_avail(type);
 }
 
-bankID allocateBank(bankType type)
-{ // allocate a single bankID from ram or divmmc memory
-    return esx_ide_bank_alloc(type);
-}
 
-uint8_t freeBank(bankType type, bankID id)
-{ // deallocate bankID (-1 error)
-    return esx_ide_bank_free(type, id);
-}
-
-uint8_t reserveBank(bankType type, bankID id)
+uint8_t nextos_reserveBank(bankType type, bankID id)
 { // allocate a specific bankID, 0 = success, 255 = failure
     return esx_ide_bank_reserve(type, id);
 }
 
-uint8_t reserveBasicBank(basicBankID id)
+bankID nextos_allocateBank(bankType type)
+{ // allocate a single bankID from ram or divmmc memory
+    return esx_ide_bank_alloc(type);
+}
+
+
+uint8_t nextos_reserveBasicBank(basicBankID id)
 { // allocate a specific BasicBankID, 0 = success, 255 = failure
-    DEBUG_FUNCTIONCALL("\n reserveBasicBank(basicBankID %03u)", id);
+    DEBUG_FUNCTIONCALL("\n nextos_reserveBasicBank(basicBankID %03u)", id);
     if (id < 111)
     {
         uint8_t lowerBank = id * 2; // There will never be an odd numbered ID in the lower bank
         uint8_t upperBank = 0;
 
-        if (0 == (reserveBank(RAM_BANK, lowerBank)))
+        if (0 == (nextos_reserveBank(RAM_BANK, lowerBank)))
         {
             upperBank += lowerBank + 1;
-            if (0 == (reserveBank(RAM_BANK, upperBank)))
+            if (0 == (nextos_reserveBank(RAM_BANK, upperBank)))
             {
                 DEBUG_MSG("\n BASICBank %03u, upperBank %03u , lowerBank %03u", id, upperBank, lowerBank);
-                DEBUG_AFTERFUNCTIONCALL("\n reserveBasicBank(basicBankID %03u) << 000");
+                DEBUG_AFTERFUNCTIONCALL("\n nextos_reserveBasicBank(basicBankID %03u) << 000");
                 return 0;
             }
-            freeBank(RAM_BANK, lowerBank);
+            nextos_freeBank(RAM_BANK, lowerBank);
         }
     }
-    DEBUG_AFTERFUNCTIONCALL("\n reserveBasicBank(basicBankID %03u) << 255", id);
+    DEBUG_AFTERFUNCTIONCALL("\n nextos_reserveBasicBank(basicBankID %03u) << 255", id);
     return 255;
 }
 
-basicBankID allocateBasicBank(void)
+basicBankID nextos_allocateBasicBank(void)
 { // We need to search for an EVEN 8K Bank ID with the ODD 8K Bank above available
-    DEBUG_FUNCTIONCALL("\n allocateBasicBank()");
+    DEBUG_FUNCTIONCALL("\n nextos_allocateBasicBank()");
     uint8_t result = 255;
     for (uint8_t basicBankId = 110; basicBankId > 0; basicBankId--)
     {        
-        result = reserveBasicBank(basicBankId);
+        result = nextos_reserveBasicBank(basicBankId);
         if (255 != result)
         {
-            DEBUG_AFTERFUNCTIONCALL("\n allocateBasicBank() << %03u", basicBankId);
+            DEBUG_AFTERFUNCTIONCALL("\n nextos_allocateBasicBank() << %03u", basicBankId);
             return basicBankId;
         }
     }
-    DEBUG_AFTERFUNCTIONCALL("\n allocateBasicBank() << %03u", result);
+    DEBUG_AFTERFUNCTIONCALL("\n nextos_allocateBasicBank() << %03u", result);
     return 255;
 }
 
-void memory_MMUtoConsole(void)
-{
-    printf("\n MMU 0[%03u],1[%03u],2[%03u],3[%03u],4[%03u],5[%03u],6[%03u],7[%03u]",
-           ZXN_READ_MMU0(),
-           ZXN_READ_MMU1(),
-           ZXN_READ_MMU2(),
-           ZXN_READ_MMU3(),
-           ZXN_READ_MMU4(),
-           ZXN_READ_MMU5(),
-           ZXN_READ_MMU6(),
-           ZXN_READ_MMU7());
-    return;
+
+uint8_t nextos_freeBank(bankType type, bankID id)
+{ // deallocate bankID (-1 error)
+    return esx_ide_bank_free(type, id);
 }
 
-void memory_MMUbankSwap(uint8_t mmuREG, bankID ID)
-{
-    DEBUG_FUNCTIONCALL("\nmemory_swapMMUbank(mmuREG %03u ,BankNumber %03u)", mmuREG, ID);
-    set_NEXTREGvalue(mmuREG, ID);
-    return;
-}
 
-void bankAllocationsToConsole(uint8_t *banksToShow, uint8_t allocatedBanks, uint8_t maxBanks, bool isBASICbanks)
+void nextos_bankAllocationsToConsole(uint8_t *banksToShow, uint8_t allocatedBanks, uint8_t maxBanks, bool isBASICbanks)
 {
     if (isBASICbanks)
     {
@@ -154,3 +137,4 @@ void bankAllocationsToConsole(uint8_t *banksToShow, uint8_t allocatedBanks, uint
     }
     return;
 }
+

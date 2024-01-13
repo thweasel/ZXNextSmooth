@@ -5,6 +5,7 @@
 
 // Dec these here Def them down the bottom.
 void bankTesting(void);
+void basicBankTesting(void);
 void mouseTesting(void);
 void espatTesting(void);
 
@@ -19,9 +20,10 @@ int main(void)
     TERMINAL_FUNC_PAUSEONSCROLL_DISABLE;
     printf("\n=START=\n");
 
+    //basicBankTesting();
     espatTesting();
 
-    // bankTesting();
+    //bankTesting();
 
     // test();
 
@@ -52,24 +54,28 @@ void espatTesting(void)
 
 void bankTesting(void)
 {
-    printf("\ntotal banks: %u ", totalBanks(RAM_BANK));
-    printf("\navailable banks: %u", availableBanks(RAM_BANK));
-    printf("\nallocateBank %u ", allocateBank(RAM_BANK));
-    printf("\navailable banks: %u", availableBanks(RAM_BANK));
+    printf("\ntotal banks: %u ", nextos_totalBanks(RAM_BANK));
+    printf("\navailable banks: %u", nextos_availableBanks(RAM_BANK));
+    printf("\nallocateBank %u ", nextos_allocateBank(RAM_BANK));
+    printf("\navailable banks: %u", nextos_availableBanks(RAM_BANK));
 
-    allocateManagedBank();
-    allocateManagedBank();
-    allocateManagedBank();
-    allocateManagedBank();
-    allocateManagedBank();
-    allocateManagedBank();
-    allocateManagedBank();
-    allocateManagedBank();
-    allocateManagedBank();
+    manage8Banks_allocateAllBanks();
+    
+    //manage8Banks_allocateBank(); // Errors
+    //manage8Banks_allocateBasicBank(); // Errors
 
-    while (1)
-        ;
+    manage8Banks_showOnConsole();
+    
+    while (1);
 }
+
+void basicBankTesting(void)
+{
+    nextos_reserveBasicBank(110);
+    nextos_allocateBasicBank();
+    return;
+}
+
 
 void mouseTesting(void)
 {

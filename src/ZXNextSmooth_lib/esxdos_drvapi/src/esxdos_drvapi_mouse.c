@@ -1,6 +1,6 @@
 #define DEBUG_ON
 #include "../../general/include/debugging.h"
-#include "../../general/Z88dkDeps.h"
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 #include "../include/esxdos_drvapi.h"
 #include "../include/esxdos_drvapi_mouse.h"

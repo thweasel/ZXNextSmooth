@@ -1,5 +1,5 @@
-#ifndef Z88dkDeps_h 
-#define Z88dkDeps_h 
+#ifndef ZXNextSmooths_Z88dkDeps_h 
+#define ZXNextSmooths_Z88dkDeps_h 
 
 #include <arch/zxn/nextos.h>
 #include <arch/zxn/esxdos.h>
@@ -9,8 +9,6 @@
 
 #include <errno.h>
 #include <intrinsic.h>
-
-
 
 #include <stdio.h>
 #include <stdint.h>

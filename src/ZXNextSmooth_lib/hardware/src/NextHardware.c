@@ -1,6 +1,6 @@
 #define DEBUG_OFF
 #include "../../general/include/debugging.h"
-#include "../../general/Z88dkDeps.h"
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 #include "../../general/include/smartStrings.h"
 

@@ -1,7 +1,7 @@
 #ifndef debugging_h
 #define debugging_h
 
-#include "../Z88dkDeps.h"
+#include "../ZXNextSmooths_Z88dkDeps.h"
 
 void debug_showU16consoleDEC(uint16_t byte)
 {

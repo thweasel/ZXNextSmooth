@@ -1,5 +1,6 @@
 #ifndef colour8array_h
 #define colour8array_h
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 #include <arch/zxn/color.h>
 

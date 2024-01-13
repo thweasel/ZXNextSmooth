@@ -1,6 +1,6 @@
 #ifndef manage8Banks_h
 #define manage8Banks_h
-#include "../../general/Z88dkDeps.h"
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 basicBankID manage8Banks_allocateBasicBank (void);
 bankID manage8Banks_allocateBank(void);

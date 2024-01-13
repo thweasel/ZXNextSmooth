@@ -1,5 +1,6 @@
 #ifndef paletteStructures_h
 #define paletteStructures_h
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 //
 //  Palette structures and sizes

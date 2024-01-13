@@ -1,6 +1,6 @@
 #define DEBUG_OFF
 #include "../../general/include/debugging.h"
-#include "../../general/Z88dkDeps.h"
+#include "../ZXNextSmooths_Z88dkDeps.h"
 
 char byteBinaryString[10]= "b00000000";
 

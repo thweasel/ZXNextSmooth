@@ -10,7 +10,7 @@
 #include "general/include/smartStrings.h"
 
 // MEMORY
-#include "memory/export_memory.h"
+#include "memoryBank/export_memoryBank.h"
 
 // GRAPHICS
 #include "graphics/export_graphics.h"

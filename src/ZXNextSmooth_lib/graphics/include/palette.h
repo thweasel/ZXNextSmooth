@@ -1,7 +1,7 @@
 #ifndef palette_h
 #define palette_h
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include <stdint.h>
 #include "../include/paletteStructures.h"
 
 

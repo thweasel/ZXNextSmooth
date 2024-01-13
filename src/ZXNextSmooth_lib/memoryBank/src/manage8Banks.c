@@ -1,6 +1,6 @@
 #define DEBUG_ON
 #include "../../general/include/debugging.h"
-#include "../../general/Z88dkDeps.h"
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 #include "../include/nextosBank.h"
 
@@ -18,7 +18,7 @@ basicBankID manage8Banks_allocateBasicBank(void)
     uint8_t result = 255; // Start in error state, if we successfully get a bank it will change
     if (BASIC_BanksAllocated < MAXBANKS)
     {
-        result = allocateBasicBank();
+        result = nextos_allocateBasicBank();
         if (255 != result)
         {
             BASIC_Banks[BASIC_BanksAllocated] = result;
@@ -36,7 +36,7 @@ bankID manage8Banks_allocateBank(void)
     uint8_t result = 255; // Start in error state, if we successfully get a bank it will change
     if (BanksAllocated < MAXBANKS)
     {
-        result = allocateBank(RAM_BANK);
+        result = nextos_allocateBank(RAM_BANK);
         if (255 != result)
         {
             Banks[BanksAllocated] = result;
@@ -78,7 +78,7 @@ bankID manage8Banks_getBankID(uint8_t BankIndex)
 void manage8Banks_showOnConsole(void)
 {
     DEBUG_FUNCTIONCALL("\n managed8Banks_showOnConsole()");
-    bankAllocationsToConsole(Banks, BanksAllocated, MAXBANKS, false);
-    bankAllocationsToConsole(BASIC_Banks, BASIC_BanksAllocated, MAXBANKS, true);
+    nextos_bankAllocationsToConsole(Banks, BanksAllocated, MAXBANKS, false);
+    nextos_bankAllocationsToConsole(BASIC_Banks, BASIC_BanksAllocated, MAXBANKS, true);
     return;
 }

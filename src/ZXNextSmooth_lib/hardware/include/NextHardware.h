@@ -1,5 +1,6 @@
 #ifndef nextHardware_h
 #define nextHardware_h
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 extern void nextregToConsole(uint8_t REG, uint8_t DAT);
 extern void nextregToConsoleNewLine(uint8_t REG, uint8_t DAT);

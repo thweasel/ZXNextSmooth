@@ -1,7 +1,6 @@
 #ifndef esxdos_drvapi_mouse_h
 #define esxdos_drvapi_mouse_h
-
-#include "../../general/Z88dkDeps.h"
+#include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 struct mouseState
 {
