@@ -43,7 +43,7 @@ The library files, you only need to add ZXNextSmooth.h in main.c you should stay
 
 # Important patterns
 
-These are things you should be doing in your code...
+These are things you should be doing in your code ...
 
 ## Header guards
 
@@ -59,10 +59,10 @@ These are things you should be doing in your code...
 
 ## Method scopes
 
-`static` localise methods or variables to files.
+`static` localise function or variables to the current C file.
 
-`static` can be used to persist variables inside a method.
+`static` can be used to persist variables between function when used inside a function.
 
-`extern` can be used to reference variables/methods in other files
+`extern` can be used to reference variables/function defined in other files
 
-Localise methods by not adding them to headers that will be used externally
+Localise function by not adding them to headers that will be used externally
