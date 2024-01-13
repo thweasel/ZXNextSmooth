@@ -2,7 +2,7 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../../hardware/export_hardware.h"
+#include "../../nextREG/export_nextREG.h"
 #include "../../general/include/smartStrings.h"
 
 #include "../include/paletteStructures.h"

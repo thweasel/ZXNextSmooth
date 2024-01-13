@@ -1,5 +1,5 @@
-#ifndef nextHardware_h
-#define nextHardware_h
+#ifndef nextREG_operations_h
+#define nextREG_operations_h
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 extern void nextregToConsole(uint8_t REG, uint8_t DAT);

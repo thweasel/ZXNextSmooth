@@ -2,8 +2,6 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../../hardware/export_hardware.h"
-
 #include "../include/nextosBank.h"
 
 /*  NOTES

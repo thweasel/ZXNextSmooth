@@ -15,11 +15,11 @@
 // GRAPHICS
 #include "graphics/export_graphics.h"
 
-// HARDWARE
-#include "hardware/export_hardware.h"
+// NEXTREG
+#include "nextREG/export_nextREG.h"
 
 // DRIVERS
-#include "esxdos_drvapi/export_esxdos_drvapi.h"
+#include "esxdos/export_esxdos.h"
 
 // TERMINAL
 #include "terminal/export_terminal.h"

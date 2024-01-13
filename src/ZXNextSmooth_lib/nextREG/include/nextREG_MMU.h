@@ -1,5 +1,5 @@
-#ifndef mmu_h
-#define mmu_h
+#ifndef nextREG_MMU_h
+#define nextREG_MMU_h
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 extern void memory_MMUtoConsole(void);

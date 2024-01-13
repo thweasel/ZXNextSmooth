@@ -2,7 +2,7 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../include/NextHardware.h"
+#include "../include/nextREG_operations.h"
 
 void memory_MMUtoConsole(void)
 {
