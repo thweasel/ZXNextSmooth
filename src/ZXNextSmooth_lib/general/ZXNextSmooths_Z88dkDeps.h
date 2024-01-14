@@ -7,7 +7,7 @@
 #include <arch/zxn.h>
 #include <z80.h>
 
-#include <errno.h>
+#include <errno.h>  // ERROR HANDLING
 #include <intrinsic.h>
 
 #include <stdio.h>

@@ -2,7 +2,9 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
+#include "../include/esxdos_structures.h"
 #include "../include/esxdos_drvapi.h"
+
 #include "../include/esxdos_drvapi_mouse.h"
 
 /*
@@ -15,8 +17,8 @@
 */
 
 // This struct is used to send driver calls and returns with driver results
-#define STRINGBUFFERSIZE (uint8_t) 33
-char mouseStringBuffer[STRINGBUFFERSIZE] = "";
+
+char mouseStringBuffer[ESXDOS_ERRORMSG_SIZE] = "";
 extern struct esx_drvapi driverApiMsg;
 
 #define MOUSEDRV_DRIVERID (uint8_t) 126

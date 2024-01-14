@@ -2,13 +2,14 @@
 #define nextos_bank_h
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
+// There are 2 bank ID schemes, 8K banks and 16K BASIC banks.
+typedef uint8_t bankID;
+typedef uint8_t basicBankID;
+
 typedef uint8_t bankType; // VALID type values defined below
 #define RAM_BANK 0
 #define DIVMMC_BANK 1
 
-// There are 2 bank ID schemes, 8K banks and 16K BASIC banks.
-typedef uint8_t bankID;
-typedef uint8_t basicBankID;
 
 extern int16_t nextos_totalBanks(bankType type);
 extern int16_t nextos_availableBanks(bankType type);

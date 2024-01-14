@@ -1,7 +1,7 @@
 #ifndef esxdos_drv_h
 #define esxdos_drv_h
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
-#include "../../nextREG/export_nextREG.h"
+
 
 extern struct esx_drvapi driverApiMsg;
 extern struct esxdos_drvapi_REG driverApiReturnREG;

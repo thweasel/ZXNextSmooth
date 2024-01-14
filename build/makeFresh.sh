@@ -5,4 +5,4 @@ rm -fr ./src/*
 
 make
 
-tree -s ./bin ./src
+#tree -s ./bin ./src

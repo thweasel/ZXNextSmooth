@@ -2,8 +2,6 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../include/esxdos_drvapi.h"
-
 
 /*  Channels access is provided by some installable drivers, we can access them using the driver api
 
@@ -47,9 +45,6 @@
 /*
     Open a "channel" and assign a "stream"
 */
-
-
-char streams [15] = "kksp";
 
 /*
 void openChannelOnStream (char channel, uint8_t streamNumber)

@@ -2,9 +2,6 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include <arch/zxn/esxdos.h>
-
-
 struct esx_drvapi driverApiMsg = {{(uint16_t)0}, (uint16_t)0, (uint16_t)0};
 
 struct esxdos_drvapi_REG
