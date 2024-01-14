@@ -19,7 +19,7 @@
 // This struct is used to send driver calls and returns with driver results
 
 char mouseStringBuffer[ESXDOS_ERRORMSG_SIZE] = "";
-extern struct esx_drvapi driverApiMsg;
+extern struct esx_drvapi esxdrvApiMsg;
 
 #define MOUSEDRV_DRIVERID (uint8_t) 126
 #define MOUSEDRV_FUNCTION_GETMOUSESTATE (uint8_t) 1
@@ -72,12 +72,12 @@ void mouseEnableAttributeCursor(uint8_t attributeValue)
     DEBUG_FUNCTIONCALL("\nmouseEnableAttributeCursor(attributeValue %s)",byteAsBinaryString(attributeValue));
     
     // Driver replies in the structure, so you need to re-populate before calling again
-    driverApiMsg.call.driver = MOUSEDRV_DRIVERID;
-    driverApiMsg.call.function = MOUSEDRV_FUNCTION_SETCURSORATTRIBUTE;
-    driverApiMsg.hl = 0b11100111; // Attribute;
-    driverApiMsg.de = 0;
+    esxdrvApiMsg.call.driver = MOUSEDRV_DRIVERID;
+    esxdrvApiMsg.call.function = MOUSEDRV_FUNCTION_SETCURSORATTRIBUTE;
+    esxdrvApiMsg.hl = 0b11100111; // Attribute;
+    esxdrvApiMsg.de = 0;
 
-    currentMouseState.errorCode = safe_callDriverApiErrorMsg(driverApiMsg,mouseStringBuffer);
+    currentMouseState.errorCode = safe_callDriverApiErrorMsg(esxdrvApiMsg,mouseStringBuffer);
 
     return;
 }
@@ -87,15 +87,15 @@ struct mouseState * mouseGetState(void)
     DEBUG_FUNCTIONCALL("\nmouseGetState()");
     
     // Driver replies in the structure, so you need to re-populate before calling again
-    driverApiMsg.call.driver = MOUSEDRV_DRIVERID;
-    driverApiMsg.call.function = MOUSEDRV_FUNCTION_GETMOUSESTATE;
-    driverApiMsg.de = 0;
-    driverApiMsg.hl = 0;
+    esxdrvApiMsg.call.driver = MOUSEDRV_DRIVERID;
+    esxdrvApiMsg.call.function = MOUSEDRV_FUNCTION_GETMOUSESTATE;
+    esxdrvApiMsg.de = 0;
+    esxdrvApiMsg.hl = 0;
 
-    currentMouseState.errorCode = safe_callDriverApiErrorMsg(driverApiMsg,mouseStringBuffer);
+    currentMouseState.errorCode = safe_callDriverApiErrorMsg(esxdrvApiMsg,mouseStringBuffer);
     
-    currentMouseState.x = driverApiMsg.de;
-    currentMouseState.y = driverApiMsg.hl;
+    currentMouseState.x = esxdrvApiMsg.de;
+    currentMouseState.y = esxdrvApiMsg.hl;
     currentMouseState.button1 = true;
     currentMouseState.button2 = true;
     currentMouseState.wheelpos = 15;   

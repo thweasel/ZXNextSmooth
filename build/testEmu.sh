@@ -2,6 +2,8 @@
 
 ./makeFresh.sh
 
+tree -s ./bin ./src
+
 ../bash_scripts/prepEmulatorSDimage.sh \
 -i /home/owen/bin/CSpect/tbblue.mmc \
 -p ../build/bin/ \

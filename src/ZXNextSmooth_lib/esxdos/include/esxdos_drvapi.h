@@ -3,7 +3,7 @@
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
 
-extern struct esx_drvapi driverApiMsg;
+extern struct esx_drvapi esxdrvApiMsg;
 extern struct esxdos_drvapi_REG driverApiReturnREG;
 extern char esxErrorMessageString[];
 
