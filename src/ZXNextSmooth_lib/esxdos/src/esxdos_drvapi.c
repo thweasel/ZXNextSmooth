@@ -28,6 +28,36 @@ struct esxdos_drvapi_REG
 #define esxErrorMessageSize 33
 char esxErrorMessageString[esxErrorMessageSize] = "";
 
+
+/*  .INSTALL information
+    These are Valid .Install .Uninstall commands
+    install "C:/nextzxos/Filename.drv"
+    install /nextzxos/Filename.drv
+    install nextzxos/Filename.drv
+
+    The . can be ommitted
+    " " are only needed if C: (drive) is used
+    Unless you have moved directory you can cheat and assume the C: is present and use relative pathing
+
+    The OS will automatically search for .Dot commands in the C:/DOT. 
+    However, it will not automatically search for the driver file, so you have to provide a path!
+*/
+
+/*  BASIC DRIVER COMMAND explained
+    The documentation that comes with the driver describes how to use it.
+
+    Some drivers may make use of the new DRIVER command.
+    This has the following form: DRIVER driverid,callid[,n1[,n2]] [TO var1[,var2[,var3]]]
+    where n1 and n2 are optional values to pass to the driver,
+    and var1, var2 and var3 are optional variables to receive results from the driver call.
+    The documentation for each driver will describe the individual DRIVER commands that you can use.
+*/
+
+#define OSPATH "/nextzxos/"
+#define DRIVERFILEACTION_LOAD (uint8_t)0
+#define DRIVERFILEACTION_UNLOAD (uint8_t)1
+
+
 void driverApiToConsole(struct esx_drvapi *showDriverApiCall, bool returnValue)
 {
     if (returnValue)
@@ -47,30 +77,6 @@ void driverApiToConsole(struct esx_drvapi *showDriverApiCall, bool returnValue)
     return;
 }
 
-/*
-    These are Valid .Install .Uninstall commands
-    install "C:/nextzxos/name.drv"
-    install /nextzxos/name.drv
-    install nextzxos/name.drv
-
-    The . can be ommitted
-    " " are only needed if C: (drive) is used
-    Unless you have moved directory you can cheat and assume the C: is present and use relative pathing
-*/
-
-/*
-    The documentation that comes with the driver describes how to use it.
-
-    Some drivers may make use of the new DRIVER command.
-    This has the following form: DRIVER driverid,callid[,n1[,n2]] [TO var1[,var2[,var3]]]
-    where n1 and n2 are optional values to pass to the driver,
-    and var1, var2 and var3 are optional variables to receive results from the driver call.
-    The documentation for each driver will describe the individual DRIVER commands that you can use.
-*/
-
-#define OSPATH "/nextzxos/"
-#define DRIVERFILEACTION_LOAD (uint8_t)0
-#define DRIVERFILEACTION_UNLOAD (uint8_t)1
 
 uint16_t driverFileAction(char *driverName, uint8_t driverFileAction)
 {
