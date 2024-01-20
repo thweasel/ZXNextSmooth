@@ -20,22 +20,20 @@ int main(void)
     TERMINAL_FUNC_PAUSEONSCROLL_DISABLE;
     printf("\n=START=\n");
 
-    //basicBankTesting();
+    // basicBankTesting();
     espatTesting();
 
-    //bankTesting();
+    // bankTesting();
 
     // test();
 
-    
     printf("\n=END=");
     while (1)
     {
         zx_border(INK_CYAN);
         z80_delay_ms(250);
-       // zx_border(INK_RED);
+        // zx_border(INK_RED);
         z80_delay_ms(250);
-
     }
 
     return 0;
@@ -60,13 +58,16 @@ void bankTesting(void)
     printf("\navailable banks: %u", nextos_availableBanks(RAM_BANK));
 
     manage8Banks_allocateAllBanks();
-    
-    //manage8Banks_allocateBank(); // Errors
-    //manage8Banks_allocateBasicBank(); // Errors
+
+    // manage8Banks_allocateBank(); // Errors
+    // manage8Banks_allocateBasicBank(); // Errors
 
     manage8Banks_showOnConsole();
-    
-    while (1);
+
+    while (1)
+    {
+        ;
+    }
 }
 
 void basicBankTesting(void)
@@ -75,7 +76,6 @@ void basicBankTesting(void)
     nextos_allocateBasicBank();
     return;
 }
-
 
 void mouseTesting(void)
 {

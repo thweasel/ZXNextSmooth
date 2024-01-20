@@ -2,7 +2,7 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../include/nextosBank.h"
+#include "../include/nextos_Banking.h"
 
 /*  Simple 8 bank and BASIC bank manager
 

@@ -41,15 +41,7 @@
 
 static bankID memoryBank = 0;
 
-#define NOS_Initialise 0x80
-#define NOS_Shutdown 0x81
-#define NOS_Open 0xF9
-#define NOS_Close 0xFA
-#define NOS_OutputChar 0xFB
-#define NOS_InputChar 0xFC
-#define NOS_GetCurStrPtr 0xFD
-#define NOS_SetCurStrPtr 0xFE
-#define NOS_GetStrExtent 0xFF
+// Network Driver API functions
 #define NEAT_Deprecated 0x01
 #define NEAT_SetCurChan 0x02
 #define NEAT_GetChanVals 0x03
@@ -61,6 +53,19 @@ static bankID memoryBank = 0;
 #define NEAT_SetBaudRate 0x09
 #define NEAT_SetBuffMode 0x0A
 #define NEAT_ProcessCMD 0x0B
+
+// OS standard Channel/Stream API functions
+#define NOS_Initialise 0x80
+#define NOS_Shutdown 0x81
+#define NOS_Open 0xF9
+#define NOS_Close 0xFA
+#define NOS_OutputChar 0xFB
+#define NOS_InputChar 0xFC
+#define NOS_GetCurStrPtr 0xFD
+#define NOS_SetCurStrPtr 0xFE
+#define NOS_GetStrExtent 0xFF
+
+
 
 extern struct esx_drvapi esxdrvApiMsg;
 static char espat_sysfile[] = "/nextzxos/espat.sys";
@@ -93,24 +98,15 @@ void espat_loadEspatSys(void)
 {
     DEBUG_FUNCTIONCALL("\n\n espat_loadEspatSys(void) \n FILENAME>> %s", espat_sysfile);
 
-    // uint8_t memoryBankH = allocateManaged_Bank();
-    // uint8_t memoryBankL = allocateManaged_Bank();
-
+    nextos_currentNEXTREG_MMUtoConsole();
+    
     basicBankID sysBank = manage8Banks_allocateBasicBank();  // TODO -- MMU operations
+    nextos_saveBasicBankSlotMMU(4);
+    nextos_setBasicBankSlot(4,sysBank);
 
-    uint8_t memoryBankH = 221;
-    uint8_t memoryBankL = 220;
+    nextos_currentNEXTREG_MMUtoConsole();
 
-    uint8_t tempMMU7 = ZXN_READ_MMU7();
-    uint8_t tempMMU6 = ZXN_READ_MMU6();
-
-    ZXN_WRITE_REG(REG_MMU7, memoryBankH);
-    ZXN_WRITE_REG(REG_MMU6, memoryBankL);  
-
-    memory_MMUtoConsole();
-
-    uint8_t *dst = (uint8_t *)0xC000; // zxn_addr_from_mmu(REG_MMU6);
-
+    uint8_t *dst = BASIC16KBankSlotAddr_4;
     fileHandle handle = openFileHandle(espat_sysfile, ESXDOS_MODE_R | ESXDOS_MODE_OPEN_EXIST);
     if (NULL != handle)
     {
@@ -118,21 +114,19 @@ void espat_loadEspatSys(void)
         closeFileHandle(handle);
     }
 
+    nextos_restoreBasicBankSlotMMU(4);
 
-    ZXN_WRITE_REG(REG_MMU7, tempMMU7);
-    ZXN_WRITE_REG(REG_MMU6, tempMMU6);
-
-    memory_MMUtoConsole();
+    nextos_currentNEXTREG_MMUtoConsole();
 
     esxdrvApiMsg.call.driver = espat_DRVID;
     esxdrvApiMsg.call.function = NEAT_Deprecated; // (1)
     esxdrvApiMsg.de = 0;
-    esxdrvApiMsg.de = (uint16_t)(memoryBankL / 2); // BASIC 16KBank ID
+    esxdrvApiMsg.de = sysBank; // BASIC 16KBank ID
     esxdrvApiMsg.hl = 0;
     // esxdrvApiMsg.hl = (uint16_t) (memoryBankL/2);
     // callDriverApi(esxdrvApiMsg);
     safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
-
+    
     return;
 }
 

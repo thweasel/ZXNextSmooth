@@ -1,8 +1,8 @@
-#define DEBUG_OFF
+#define DEBUG_ON
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../include/nextosBank.h"
+#include "../include/nextos_Banking.h"
 
 /*  NOTES
     The Next has between 1 and 2MBs of RAM which is natively indexed as 8K banks from 0 to 222.
@@ -45,7 +45,6 @@ int16_t nextos_availableBanks(bankType type)
     return esx_ide_bank_avail(type);
 }
 
-
 uint8_t nextos_reserveBank(bankType type, bankID id)
 { // allocate a specific bankID, 0 = success, 255 = failure
     return esx_ide_bank_reserve(type, id);
@@ -86,7 +85,7 @@ basicBankID nextos_allocateBasicBank(void)
     DEBUG_FUNCTIONCALL("\n nextos_allocateBasicBank()");
     uint8_t result = 255;
     for (uint8_t basicBankId = 110; basicBankId > 0; basicBankId--)
-    {        
+    {
         result = nextos_reserveBasicBank(basicBankId);
         if (255 != result)
         {
@@ -98,12 +97,10 @@ basicBankID nextos_allocateBasicBank(void)
     return 255;
 }
 
-
 uint8_t nextos_freeBank(bankType type, bankID id)
 { // deallocate bankID (-1 error)
     return esx_ide_bank_free(type, id);
 }
-
 
 void nextos_bankAllocationsToConsole(uint8_t *banksToShow, uint8_t allocatedBanks, uint8_t maxBanks, bool isBASICbanks)
 {
@@ -115,14 +112,14 @@ void nextos_bankAllocationsToConsole(uint8_t *banksToShow, uint8_t allocatedBank
     {
         putchar('\n');
     }
-    
+
     printf(" Banks Allocated: %u \n", allocatedBanks);
 
     for (uint8_t i = 0; i < maxBanks; i++)
-    {        
+    {
         if (isBASICbanks)
         {
-            printf("%u[%u<%u,%u>]",i, banksToShow[i],(banksToShow[i]*2+1) ,(banksToShow[i]*2) );
+            printf("%u[%u<%u,%u>]", i, banksToShow[i], (banksToShow[i] * 2 + 1), (banksToShow[i] * 2));
         }
         else
         {
@@ -136,3 +133,143 @@ void nextos_bankAllocationsToConsole(uint8_t *banksToShow, uint8_t allocatedBank
     return;
 }
 
+void nextos_currentNEXTREG_MMUtoConsole(void)
+{
+    printf("\n MMU 0[%03u],1[%03u],2[%03u],3[%03u],4[%03u],5[%03u],6[%03u],7[%03u]",
+           ZXN_READ_MMU0(),
+           ZXN_READ_MMU1(),
+           ZXN_READ_MMU2(),
+           ZXN_READ_MMU3(),
+           ZXN_READ_MMU4(),
+           ZXN_READ_MMU5(),
+           ZXN_READ_MMU6(),
+           ZXN_READ_MMU7());
+    return;
+}
+
+static uint8_t savedMMU[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+void nextos_saveBasicBankSlotMMU(basicBankSlot slot)
+{
+    DEBUG_FUNCTIONCALL("\n nextos_saveBasicBankSlotMMU(slot %03u)",slot);
+    switch (slot)
+    {
+    case 1:
+        savedMMU[0] = ZXN_READ_MMU0();
+        savedMMU[1] = ZXN_READ_MMU1();
+        break;
+    case 2:
+        savedMMU[2] = ZXN_READ_MMU2();
+        savedMMU[3] = ZXN_READ_MMU3();
+        break;
+    case 3:
+        savedMMU[4] = ZXN_READ_MMU4();
+        savedMMU[5] = ZXN_READ_MMU5();
+        break;
+    case 4:
+        savedMMU[6] = ZXN_READ_MMU6();
+        savedMMU[7] = ZXN_READ_MMU7();
+        break;
+    default:
+        break;
+    }
+
+    return;
+}
+
+void nextos_restoreBasicBankSlotMMU(basicBankSlot slot)
+{
+    DEBUG_FUNCTIONCALL("\n nextos_restoreBasicBankSlotMMU(slot %03u)",slot);
+    switch (slot)
+    {
+    case 1:
+        ZXN_WRITE_MMU0(savedMMU[0]);
+        ZXN_WRITE_MMU1(savedMMU[1]);
+        break;
+    case 2:
+        ZXN_WRITE_MMU2(savedMMU[2]);
+        ZXN_WRITE_MMU3(savedMMU[3]);
+        break;
+    case 3:
+        ZXN_WRITE_MMU4(savedMMU[4]);
+        ZXN_WRITE_MMU5(savedMMU[5]);
+        break;
+    case 4:
+        ZXN_WRITE_MMU6(savedMMU[6]);
+        ZXN_WRITE_MMU7(savedMMU[7]);
+        break;
+    default:
+        break;
+    }
+
+    return;
+}
+
+void nextos_setBasicBankSlot(basicBankSlot slot, basicBankID basicbank)
+{
+    DEBUG_FUNCTIONCALL("\n nextos_setBasicBankSlot(slot %03u ,basicbank %03u)", slot, basicbank);
+    bankID lowerBank = (basicbank * 2);
+    bankID upperBank = (lowerBank + 1);
+
+    DEBUG_MSG ("\n Lower bank %03u, upper bank %03u",lowerBank,upperBank);
+
+    switch (slot)
+    {
+    case 1:
+        ZXN_WRITE_MMU0(lowerBank);
+        ZXN_WRITE_MMU1(upperBank);
+        break;
+    case 2:
+        ZXN_WRITE_MMU2(lowerBank);
+        ZXN_WRITE_MMU3(upperBank);
+        break;
+    case 3:
+        ZXN_WRITE_MMU4(lowerBank);
+        ZXN_WRITE_MMU5(upperBank);
+        break;
+    case 4:
+        ZXN_WRITE_MMU6(lowerBank);
+        ZXN_WRITE_MMU7(upperBank);
+        break;
+    default:
+        break;
+    }
+
+    return;
+}
+
+void nextos_setBankSlot(bankSlot slot, bankID bank)
+{
+    DEBUG_FUNCTIONCALL("\n nextos_setBankSlot(slot %03u ,bank %03u)", slot, bank);
+    switch (slot)
+    {
+    case 1:
+        ZXN_WRITE_MMU0(bank);
+        break;
+    case 2:
+        ZXN_WRITE_MMU1(bank);
+        break;
+    case 3:
+        ZXN_WRITE_MMU2(bank);
+        break;
+    case 4:
+        ZXN_WRITE_MMU3(bank);
+        break;
+    case 5:
+        ZXN_WRITE_MMU4(bank);
+        break;
+    case 6:
+        ZXN_WRITE_MMU5(bank);
+        break;
+    case 7:
+        ZXN_WRITE_MMU6(bank);
+        break;
+    case 8:
+        ZXN_WRITE_MMU7(bank);
+        break;
+    default:
+        break;
+    }
+
+    return;
+}
