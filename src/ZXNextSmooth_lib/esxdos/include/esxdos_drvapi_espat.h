@@ -2,7 +2,14 @@
 #define esxdos_drvapi_espat_h
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-void espat_DriverInstall (void);
-void espat_OpenConnection (void);
+typedef uint8_t nethandle;
+typedef uint16_t networkPort;
 
+void espat_DriverInstall(void);
+
+nethandle espat_OpenConnection(char *connectionString);
+nethandle espat_OpenTCPConnection(char *addr, networkPort port);
+
+
+void espat_testSend(nethandle myNetHandle);
 #endif

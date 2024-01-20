@@ -27,6 +27,7 @@ int main(void)
 
     // test();
 
+
     printf("\n=END=");
     while (1)
     {
@@ -39,10 +40,16 @@ int main(void)
     return 0;
 }
 
+
+static nethandle myNetHandle = 0;
+static char connectionString[] = "TCP,172.16.1.112,1234";
 void espatTesting(void)
 {
     espat_DriverInstall();
-    // espat_OpenConnection();
+    //myNetHandle = espat_OpenConnection(connectionString);
+    myNetHandle = espat_OpenTCPConnection("172.16.1.112",1234);
+    
+    espat_testSend(myNetHandle);
 
     z80_delay_ms(250);
     // printf("\nnethandle?: 0x%02x, %c",espat_drvapi.call.function,espat_drvapi.call.function);
