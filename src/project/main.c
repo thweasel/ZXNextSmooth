@@ -8,6 +8,7 @@ void bankTesting(void);
 void basicBankTesting(void);
 void mouseTesting(void);
 void espatTesting(void);
+void espatTimeTest(void);
 
 // int main(int argc, char const *argv[])
 int main(void)
@@ -21,7 +22,8 @@ int main(void)
     printf("\n=START=\n");
 
     // basicBankTesting();
-    espatTesting();
+    //espatTesting();
+    espatTimeTest();
 
     // bankTesting();
 
@@ -56,6 +58,40 @@ void espatTesting(void)
 
     return;
 }
+
+void espatTimeTest(void)
+{
+    espat_DriverInstall();
+    myNetHandle = espat_OpenTCPConnection("time.nxtel.org",12300);
+
+    z80_delay_ms(50);
+
+    espat_SendChar(myNetHandle,'t');
+    espat_SendChar(myNetHandle,'e');
+    espat_SendChar(myNetHandle,'s');
+    espat_SendChar(myNetHandle,'t');
+    
+    z80_delay_ms(50);
+    
+    for (uint8_t i = 0; i < 22; i++)
+    {
+        putchar(espat_RecvChar(myNetHandle));
+    }
+    return;
+}
+
+
+//
+//  TCP TIME.NXTEL.ORG 12300
+//
+
+/*
+AT+CIPMUX=0
+AT+CIPSTART="TCP","time.nxtel.org",12300
+AT+CIPSEND=4 TEST
+
+reply 22 dd/mm/yyyyhh:mm:ss
+*/
 
 void bankTesting(void)
 {

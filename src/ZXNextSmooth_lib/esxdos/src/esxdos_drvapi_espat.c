@@ -222,6 +222,20 @@ void espat_SendChar(nethandle handle, char c)
     return;
 }
 
+char espat_RecvChar(nethandle handle)
+{
+    esxdrvApiMsg.call.driver = espat_DRVID;
+    esxdrvApiMsg.call.function = NOS_InputChar;
+    esxdrvApiMsg.de = (handle << 8);
+    esxdrvApiMsg.hl = 0;
+    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
+
+    char result = esxdrvApiMsg.de;
+    return result;
+}
+
+
+
 void espat_testSend(nethandle myNetHandle)
 {
     espat_SendChar(myNetHandle, 'X');
@@ -229,3 +243,6 @@ void espat_testSend(nethandle myNetHandle)
     espat_SendChar(myNetHandle, 'Z');
     return;
 }
+
+
+
