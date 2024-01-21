@@ -1,8 +1,8 @@
-#define DEBUG_ON
+#define DEBUG_OFF
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../include/esxdos_structures.h"
+#include "../include/esxdos_drvapi.h"
 
 extern int errno; // File errors are reported here comes from errno.h
 /* errno codes
