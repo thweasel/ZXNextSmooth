@@ -7,8 +7,8 @@
 
 //#pragma output CRT_ORG_CODE = 0x8000
 #pragma output CRT_ORG_CODE = 0x6000
-//#pragma output REGISTER_SP = 0xBFE0
-#pragma output REGISTER_SP = 0x9FE0
+#pragma output REGISTER_SP = 0xBFE0
+//#pragma output REGISTER_SP = 0x9FE0
 
 // CLASSIC LIB
 

@@ -1,4 +1,4 @@
-#define DEBUG_ON
+#define DEBUG_OFF
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
@@ -6,11 +6,10 @@
 #include "../../memoryBank/export_memoryBank.h"
 
 #include "../include/esxdos_fileIO.h"
-#include "../include/esxdos_structures.h"
+
 
 #include "../include/esxdos_drvapi_espat.h"
 #include "../include/esxdos_drvapi.h"
-
 
 /*  ESPAT Driver ID is 'N' which is 78 decimal
 
@@ -39,7 +38,7 @@
 
 */
 
-#define espat_DRVID (uint8_t)78 // 'N'
+
 #define espat_DRVFUNC_SETMEMBANK (uint8_t)1
 
 static bankID memoryBank = 0;
@@ -71,36 +70,33 @@ static bankID memoryBank = 0;
 extern struct esx_drvapi esxdrvApiMsg;
 static char espat_sysfile[] = "/nextzxos/espat.sys";
 
-
 //
 //  INSTALL AND SETUP DRIVER
 //
 
-void espat_setBaud(void)
+void espat_setBaud(void) // 0x09 NEAT_SetBaudRate
 {
     DEBUG_FUNCTIONCALL("\n\n espat_setBaud(void)");
-    esxdrvApiMsg.call.driver = espat_DRVID;
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
     esxdrvApiMsg.call.function = NEAT_SetBaudRate;
     esxdrvApiMsg.de = (uint16_t)0; // 115K
     esxdrvApiMsg.hl = (uint16_t)0; //
-    // callDriverApi(esxdrvApiMsg);
-    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
+    callDriverApiErrorMsg(esxdrvApiMsg);
     return;
 }
 
-void espat_setTimeouts(void)
+void espat_setTimeouts(void) // 0x05 NEAT_SetTimeouts
 {
     DEBUG_FUNCTIONCALL("\n\n espat_setTimeouts(void)");
-    esxdrvApiMsg.call.driver = espat_DRVID;
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
     esxdrvApiMsg.call.function = NEAT_SetTimeouts;
     esxdrvApiMsg.de = (uint16_t)96;   // receive
     esxdrvApiMsg.hl = (uint16_t)1024; // send
-    // callDriverApi(esxdrvApiMsg);
-    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
+    callDriverApiErrorMsg(esxdrvApiMsg);
     return;
 }
 
-void espat_loadEspatSys(void)
+void espat_loadEspatSys(void) // 0x01 NEAT_Deprecated
 {
     DEBUG_FUNCTIONCALL("\n\n espat_loadEspatSys(void) \n FILENAME>> %s", espat_sysfile);
 
@@ -118,27 +114,28 @@ void espat_loadEspatSys(void)
 
     nextos_restoreBasicBankSlotMMU(4);
 
-    esxdrvApiMsg.call.driver = espat_DRVID;
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
     esxdrvApiMsg.call.function = NEAT_Deprecated; // (1)
     esxdrvApiMsg.de = sysBank;                    // BASIC 16KBank ID
     esxdrvApiMsg.hl = 0;
-    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
+    callDriverApiErrorMsg(&esxdrvApiMsg);
 
     return;
 }
 
-void espat_addBufferMemoryBank(void)
-{ // This is going to be deprecated in BETA1 / RC1
+// This should have a counter function to remove buffers (0x07)
+void espat_addBufferMemoryBank(void) // 0x06 NEAT_AddBank
+{                                    // This is going to be deprecated in BETA1 / RC1
     DEBUG_FUNCTIONCALL("\n\n espat_setMemoryBank(void)");
 
     // We need 2 8K banks consecutively (16K), double grab and store the second bank ID
     basicBankID dataBuffer = manage8Banks_allocateBasicBank(); // TODO -- MMU operations
 
-    esxdrvApiMsg.call.driver = espat_DRVID;
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
     esxdrvApiMsg.call.function = NEAT_AddBank; // (6)
     esxdrvApiMsg.de = dataBuffer;              // BASIC 16KBank ID
     esxdrvApiMsg.hl = 0;
-    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
+    callDriverApi(esxdrvApiMsg);
 
     return;
 }
@@ -147,6 +144,7 @@ void espat_DriverInstall(void)
 {
     DEBUG_FUNCTIONCALL("\n\n espatDriverInstall(void)");
     installDriver("ESPAT.drv");
+    
     espat_loadEspatSys();
 
     espat_addBufferMemoryBank();
@@ -161,47 +159,47 @@ void espat_DriverInstall(void)
 //
 //  OPEN CONNECTIONS
 //
-static char connectionString [128] = "";
+static char connectionString[128] = "";
 
-void espat_GetChannel(void)
+void espat_GetChannel(void) // 0x03 NEAT_GetChanVals
 {
     DEBUG_FUNCTIONCALL("\n\n espat_GetChannel()");
 
-    esxdrvApiMsg.call.driver = espat_DRVID;
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
     esxdrvApiMsg.call.function = NEAT_GetChanVals;
     esxdrvApiMsg.de = 0;
     esxdrvApiMsg.hl = 0;
-    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
+    callDriverApiErrorMsg(esxdrvApiMsg);
 
     return;
 }
 
-nethandle espat_OpenConnection(char *connectionString)
-{   //  Connection string format from ESP-AT "<TCP/UDP>,<IP OR DNS ADDRESS>,<PORT>" e.g."TCP,127.0.0.1,80"
+nethandle espat_OpenConnection(char *connectionString) // 0xF9 NOS_Open
+{                                                      //  Connection string format from ESP-AT "<TCP/UDP>,<IP OR DNS ADDRESS>,<PORT>" e.g."TCP,127.0.0.1,80"
     DEBUG_FUNCTIONCALL("\n espat_OpenConnection( %s )", connectionString);
 
     espat_GetChannel(); // Do this first ...
 
-    esxdrvApiMsg.call.driver = espat_DRVID;
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
     esxdrvApiMsg.call.function = NOS_Open;
     esxdrvApiMsg.de = strlen(connectionString);
     esxdrvApiMsg.hl = connectionString;
-    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg); // calls > esx_m_drvapi(esxdrvApiMsg);
+    callDriverApiErrorMsg(esxdrvApiMsg); // calls > esx_m_drvapi(esxdrvApiMsg);
 
     return esxdrvApiMsg.call.function; // Driver API returns myNetHandle in Reg C (function);
 }
 
 nethandle espat_OpenTCPConnection(char *addr, networkPort port)
 {
-    strcat(connectionString,"TCP,");    
-    
-    strcat(connectionString,addr);
-    strcat(connectionString,",");
-    
-    char portBuffer[6]= "00000";
-    itoa(port,portBuffer,10);
+    strcat(connectionString, "TCP,");
+
+    strcat(connectionString, addr);
+    strcat(connectionString, ",");
+
+    char portBuffer[6] = "00000";
+    itoa(port, portBuffer, 10);
     strcat(connectionString, portBuffer);
-    
+
     return espat_OpenConnection(connectionString);
 }
 
@@ -209,32 +207,34 @@ nethandle espat_OpenTCPConnection(char *addr, networkPort port)
 //  SEND RECEIVE DATA TO NETWORK HANDLE
 //
 
-void espat_SendChar(nethandle handle, char c)
+void espat_SendChar(nethandle handle, char c) // 0xFB NOS_OutputChar
 {
     DEBUG_FUNCTIONCALL("\n\n espat_SendChar(handle %03u, char %c)", handle, c);
 
-    esxdrvApiMsg.call.driver = espat_DRVID;
+    /*
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
     esxdrvApiMsg.call.function = NOS_OutputChar;
     esxdrvApiMsg.de = (handle << 8) + c;
     esxdrvApiMsg.hl = 0;
-    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
+    safe_callDriverApiErrorMsg(esxdrvApiMsg);
+    */
+    nos_OutputChar(DRIVERID_espat,handle,c);
+
 
     return;
 }
 
-char espat_RecvChar(nethandle handle)
+char espat_RecvChar(nethandle handle) // 0xFC NOS_InputChar
 {
-    esxdrvApiMsg.call.driver = espat_DRVID;
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
     esxdrvApiMsg.call.function = NOS_InputChar;
     esxdrvApiMsg.de = (handle << 8);
     esxdrvApiMsg.hl = 0;
-    safe_callDriverApiErrorMsg(esxdrvApiMsg, esxdos_errorMsg);
+    callDriverApi(esxdrvApiMsg);
 
     char result = esxdrvApiMsg.de;
     return result;
 }
-
-
 
 void espat_testSend(nethandle myNetHandle)
 {
@@ -244,5 +244,98 @@ void espat_testSend(nethandle myNetHandle)
     return;
 }
 
+//
+//  Other functions
+//
 
+void setDriverCurrentChannel(uint16_t channel) // 0x02 NEAT_SetCurChan
+{
+    /*
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
+    esxdrvApiMsg.call.function = NEAT_SetCurChan;
+    esxdrvApiMsg.de = channel;
+    esxdrvApiMsg.hl = 0;
+    callDriverApi(esxdrvApiMsg);
+    */
+    callDriver(DRIVERID_espat,NEAT_SetCurChan, channel,0);
+    return;
+}
 
+void getChannelValues(void) // 0x03 NEAT_GetChanVals
+{
+    DEBUG_FUNCTIONCALL("\n getChannelValues(void)");
+    // Set the current Channel with 0x02
+    // DE channel or 0 for current channel
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
+    esxdrvApiMsg.call.function = NEAT_GetChanVals;
+    esxdrvApiMsg.de = 0;
+    esxdrvApiMsg.hl = 0;
+    callDriverApi(esxdrvApiMsg);
+    return;
+
+    // DE and HL are input and output positions on the esp IPD read buffer (@49152)
+}
+
+void setCMDIPDvalues(void) // 0x04 NEAT_SetChanVals
+{                          // Set the current Channel with 0x02
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
+    esxdrvApiMsg.call.function = NEAT_SetChanVals;
+    esxdrvApiMsg.de = 0;
+    esxdrvApiMsg.hl = 0;
+    callDriverApi(esxdrvApiMsg);
+    return;
+}
+
+void getLinkIDfromHandle(nethandle handle) // 0x08 NEAT_GetESPLink
+{
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
+    esxdrvApiMsg.call.function = NEAT_GetESPLink;
+    esxdrvApiMsg.de = handle;
+    esxdrvApiMsg.hl = 0;
+    callDriverApi(esxdrvApiMsg);
+    return; // BC contains the linkID
+}
+
+void setOutputBufferMode(nethandle channel, uint8_t mode) // 0x0A NEAT_SetBuffMode
+{
+    DEBUG_FUNCTIONCALL("\n setOutputBufferMode(channel %03u, mode %03u)", channel, mode);
+    // DE is channel (0 default) (IPD channels only)
+    // HL is mode 2-255 characters 1=immesdiate, 0=wait for CR/256chars
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
+    esxdrvApiMsg.call.function = NEAT_SetBuffMode;
+    esxdrvApiMsg.de = channel;
+    esxdrvApiMsg.hl = mode;
+    callDriverApi(esxdrvApiMsg);
+    return; // BC contains the linkID
+}
+
+void setIPDdetect(void) // 0x0B NEAT_ProcessCMD
+{
+    // DE channel 0 default (IPD channel only)
+    // HL 0x08 disable (0x00 enable)
+    esxdrvApiMsg.call.driver = DRIVERID_espat;
+    esxdrvApiMsg.call.function = NEAT_ProcessCMD;
+    esxdrvApiMsg.de = 0;
+    esxdrvApiMsg.hl = 0;
+    callDriverApi(esxdrvApiMsg);
+    return;
+}
+
+bytesWritten netWrite(fileHandle openHandle, void *dataToWrite, size_t numberOfBytesToWrite)
+{
+    DEBUG_FUNCTIONCALL("\n netWrite(openHandle, dataToWrite, numberOfBytesToWrite )");
+    esxdos_clearErrorCodes();
+    bytesWritten bytes = esx_f_write(openHandle, dataToWrite, numberOfBytesToWrite);
+    DEBUG_MSG("\n esx_f_write() bytesWrite: %03u", bytes);
+    if (0 != errno)
+    {
+        esxdos_setErrorCodes(errno);
+        return NULL;
+    }
+    DEBUG_MSG("\n bytes written: %03u", bytes);
+    return bytes;
+}
+
+bytesRead netRead(fileHandle openHandle, void *readDataInto, size_t numberOfBytesToRead)
+{
+}

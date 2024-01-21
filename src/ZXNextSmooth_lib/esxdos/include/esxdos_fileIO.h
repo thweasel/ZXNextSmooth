@@ -3,7 +3,7 @@
 
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../include/esxdos_structures.h"
+#include "../include/esxdos_drvapi.h"
 
 extern fileHandle openFileHandle(char *pathFileName, esxdosFileAccessMask fileAccessType);
 extern uint16_t readFile(fileHandle openHandle, void *readDataInto, size_t numberOfBytesToRead);

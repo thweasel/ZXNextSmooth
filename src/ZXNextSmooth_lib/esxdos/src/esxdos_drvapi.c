@@ -2,6 +2,8 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
+#include "../include/esxdos_drvapi.h"
+
 struct esx_drvapi esxdrvApiMsg = {{(uint16_t)0}, (uint16_t)0, (uint16_t)0};
 
 struct esxdos_drvapi_REG
@@ -24,10 +26,24 @@ struct esxdos_drvapi_REG
 
 } driverApiReturnREG = {{(uint16_t)0}, {(uint16_t)0}, {(uint16_t)0}};
 
+extern int errno; // File errors are reported here comes from errno.h
+esxdosErrorCode lastEsxDos_errorCode = 0;
+char lastEsxDos_ErrorMessage[ESXDOS_ERRORMSG_SIZE] = "";
 
-#define esxErrorMessageSize 33
-char esxErrorMessageString[esxErrorMessageSize] = "";
+void esxdos_clearErrorCodes(void)
+{
+    errno = 0;
+    lastEsxDos_errorCode = 0;
+    lastEsxDos_ErrorMessage[0] = '\0';
+    return;
+}
 
+void esxdos_setErrorCodes(esxdosErrorCode errorCode)
+{
+    lastEsxDos_errorCode = errno;
+    esx_m_geterr(errno, lastEsxDos_ErrorMessage);
+    return;
+}
 
 /*  .INSTALL information
     These are Valid .Install .Uninstall commands
@@ -39,7 +55,7 @@ char esxErrorMessageString[esxErrorMessageSize] = "";
     " " are only needed if C: (drive) is used
     Unless you have moved directory you can cheat and assume the C: is present and use relative pathing
 
-    The OS will automatically search for .Dot commands in the C:/DOT. 
+    The OS will automatically search for .Dot commands in the C:/DOT.
     However, it will not automatically search for the driver file, so you have to provide a path!
 */
 
@@ -57,6 +73,9 @@ char esxErrorMessageString[esxErrorMessageSize] = "";
 #define DRIVERFILEACTION_LOAD (uint8_t)0
 #define DRIVERFILEACTION_UNLOAD (uint8_t)1
 
+//
+//  DRIVER API MESSAGE SYSTEM
+//
 
 void driverApiToConsole(struct esx_drvapi *showDriverApiCall, bool returnValue)
 {
@@ -77,31 +96,30 @@ void driverApiToConsole(struct esx_drvapi *showDriverApiCall, bool returnValue)
     return;
 }
 
-
 uint16_t driverFileAction(char *driverName, uint8_t driverFileAction)
 {
     DEBUG_FUNCTIONCALL("\ndriverFileAction(driverName *%02x, driverFileAction %u)", driverName, driverFileAction);
     switch (driverFileAction)
     {
     case DRIVERFILEACTION_LOAD:
-        safe_appendString(esxErrorMessageString, "install ", esxErrorMessageSize);
+        safe_appendString(lastEsxDos_ErrorMessage, "install ", ESXDOS_ERRORMSG_SIZE);
         break;
     case DRIVERFILEACTION_UNLOAD:
-        safe_appendString(esxErrorMessageString, "uninstall ", esxErrorMessageSize);
+        safe_appendString(lastEsxDos_ErrorMessage, "uninstall ", ESXDOS_ERRORMSG_SIZE);
         break;
     default:
         break;
     }
 
-    safe_appendString(esxErrorMessageString, OSPATH, esxErrorMessageSize);
-    safe_appendString(esxErrorMessageString, driverName, esxErrorMessageSize);
+    safe_appendString(lastEsxDos_ErrorMessage, OSPATH, ESXDOS_ERRORMSG_SIZE);
+    safe_appendString(lastEsxDos_ErrorMessage, driverName, ESXDOS_ERRORMSG_SIZE);
 
-    DEBUG_MSG("\nDriverFileAction> %s ", esxErrorMessageString);
+    DEBUG_MSG("\nDriverFileAction> %s ", lastEsxDos_ErrorMessage);
 
-    uint16_t esxdosMsg = esx_m_execcmd(esxErrorMessageString);
-    esx_m_geterr(esxdosMsg, esxErrorMessageString);
+    uint16_t esxdosMsg = esx_m_execcmd(lastEsxDos_ErrorMessage);
+    esx_m_geterr(esxdosMsg, lastEsxDos_ErrorMessage);
 
-    DEBUG_MSG("\nesxdosMsg> %u, %s ", esxdosMsg, esxErrorMessageString);
+    DEBUG_MSG("\nesxdosMsg> %u, %s ", esxdosMsg, lastEsxDos_ErrorMessage);
     return esxdosMsg;
 }
 
@@ -124,9 +142,10 @@ uint8_t DUMMY_callDriverApi(struct esx_drvapi *driverApiCall)
     return result;
 }
 
+
 uint8_t callDriverApi(struct esx_drvapi *driverApiCall)
 {
-    DEBUG_FUNCTIONCALL("\ncallDriverApi(*driverApiCall) ");
+    DEBUG_FUNCTIONCALL("\ncallDriverApi(* %04x) ", driverApiCall);
     DEBUG_DRIVERAPI(driverApiCall, false);
     int result = esx_m_drvapi(driverApiCall);
     DEBUG_DRIVERAPI(driverApiCall, true);
@@ -143,21 +162,64 @@ uint8_t safe_callDriverApi(struct esx_drvapi *driverApiCall)
     return callDriverApi(driverApiCall);
 }
 
-uint8_t callDriverApiErrorMsg(struct esx_drvapi *driverApiCall, char *errorMsgBuffer)
+uint8_t callDriverApiErrorMsg(struct esx_drvapi *driverApiCall)
 {
-    DEBUG_FUNCTIONCALL("\ncallDriverApiErrorMsg(*driverApiCall, *errorMsgBuffer) ");
+    DEBUG_FUNCTIONCALL("\ncallDriverApiErrorMsg(* %04x) ", driverApiCall);
     DEBUG_DRIVERAPI(driverApiCall, false);
 
+    esxdos_clearErrorCodes();
     uint8_t result = esx_m_drvapi(driverApiCall);
     DEBUG_DRIVERAPI(driverApiCall, true);
 
-    esx_m_geterr(result, errorMsgBuffer);
-    DEBUG_MSG("\n esx_m_drvapi(driverApi) << %u, %s", result, errorMsgBuffer);
+    if (errno > 1)
+    {
+        esx_m_geterr(errno, lastEsxDos_ErrorMessage);
+        printf("\n  ERRNO: %03u, %s", errno, lastEsxDos_ErrorMessage);
+    }
+
+    if (result > 0)
+    {
+        esx_m_geterr(result, lastEsxDos_ErrorMessage);
+        DEBUG_MSG("\n  RESULT: %03u, %s", result, lastEsxDos_ErrorMessage);
+    }
 
     return result;
 }
 
-uint8_t safe_callDriverApiErrorMsg(struct esx_drvapi *driverApiCall, char *errorMsgBuffer)
+void callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl)
+{
+    DEBUG_FUNCTIONCALL("\n callDriver(driver %03u, function %03u, DE %05u, HL %05u) ", driver, function, de, hl);
+    
+    esxdrvApiMsg.call.driver = driver;
+    esxdrvApiMsg.call.function = function;
+    esxdrvApiMsg.de = de;
+    esxdrvApiMsg.hl = hl;
+    
+    esxdos_clearErrorCodes();
+    
+    DEBUG_DRIVERAPI(esxdrvApiMsg, false);
+    uint8_t result = esx_m_drvapi(esxdrvApiMsg);
+    DEBUG_DRIVERAPI(esxdrvApiMsg, true);
+
+    if (errno > 1)
+    {
+        esx_m_geterr(errno, lastEsxDos_ErrorMessage);
+        printf("\n  ERRNO: %03u, %s", errno, lastEsxDos_ErrorMessage);
+    }
+
+    if (result > 0)
+    {
+        esx_m_geterr(result, lastEsxDos_ErrorMessage);
+        DEBUG_MSG("\n  RESULT: %03u, %s", result, lastEsxDos_ErrorMessage);
+    }
+
+    return result;
+
+
+}
+
+
+uint8_t safe_callDriverApiErrorMsg(struct esx_drvapi *driverApiCall)
 {
     if (NULL == driverApiCall)
     {
@@ -165,11 +227,104 @@ uint8_t safe_callDriverApiErrorMsg(struct esx_drvapi *driverApiCall, char *error
         return 255;
     }
 
-    if (NULL == errorMsgBuffer)
-    {
-        DEBUG_MSG("\nsafe_callDriverApi() NULL errorMsgBuffer");
-        return 255;
-    }
+    return callDriverApiErrorMsg(driverApiCall);
+}
 
-    return callDriverApiErrorMsg(driverApiCall, errorMsgBuffer);
+//
+//  GENERIC CHANNEL FUNCTIONS
+//
+
+// OS standard Channel/Stream API functions
+#define NOS_Initialise 0x80
+#define NOS_Shutdown 0x81
+#define NOS_Open 0xF9
+#define NOS_Close 0xFA
+#define NOS_OutputChar 0xFB
+#define NOS_InputChar 0xFC
+#define NOS_GetCurStrPtr 0xFD
+#define NOS_SetCurStrPtr 0xFE
+#define NOS_GetStrExtent 0xFF
+
+/*  Channels access is provided by some installable drivers, we can access them using the driver api
+
+    ; The following calls are used to allow your driver to support
+    ; channels for i/o (manipulated with BASIC commands like OPEN #).
+    ; Each call is optional - just return with carry set and A=0
+    ; for any calls that you don't want to provide.
+    ;
+    ; B=$f6: copy screen (usually for printer drivers)
+    ; B=$f7: return output status
+    ; B=$f8: return input status
+    ; B=$f9: open channel
+    ; B=$fa: close channel
+    ; B=$fb: output character
+    ; B=$fc: input character
+    ; B=$fd: get current stream pointer
+    ; B=$fe: set current stream pointer
+    ; B=$ff: get stream size/extent
+*/
+
+/*  Channels have designations, "Driver ID"
+
+        'k' - keyboard
+        's' - screen
+        'p' - printer
+
+        'N' - Network (78)
+
+*/
+
+/*  Existing system Streams 0 - 3
+
+    0 - Keyboard
+    1 - Keyboard
+    2 - Screen
+    3 - Printer
+*/
+
+/*
+    Open a "channel" and assign a "stream"
+*/
+
+/*
+void openChannelOnStream (char channel, uint8_t streamNumber)
+{
+
+    return;
+}
+*/
+
+void nos_OutputChar(driverID driver, channel handle, char c) // 0xFB
+{
+    DEBUG_FUNCTIONCALL("\n nos_OutputChar(driver %03u, handle %03u, c %c)", driver, handle, c);
+
+    callDriver(driver,NOS_OutputChar, (handle << 8) + c, 0);
+
+    return;
+}
+
+char nos_InputChar(driverID driver, channel handle) // 0xFC
+{
+    DEBUG_FUNCTIONCALL("\n nos_InputChar(driver %03u, handle %03u)", driver, handle);
+    esxdrvApiMsg.call.driver = driver;
+    esxdrvApiMsg.call.function = NOS_OutputChar;
+    esxdrvApiMsg.de = (handle << 8);
+    esxdrvApiMsg.hl = 0;
+    safe_callDriverApiErrorMsg(esxdrvApiMsg);
+    return esxdrvApiMsg.de;
+}
+
+uint16_t nos_StreamSize(driverID driver, channel handle) // 0xFF
+{
+    DEBUG_FUNCTIONCALL("\n nos_StreamSize(driver %03u, handle %03u)", driver, handle);
+    // D handle
+    esxdrvApiMsg.call.driver = driver;
+    esxdrvApiMsg.call.function = NOS_Open;
+    esxdrvApiMsg.de = (handle << 8);
+    esxdrvApiMsg.hl = 0;
+    safe_callDriverApiErrorMsg(esxdrvApiMsg); // calls > esx_m_drvapi(esxdrvApiMsg);
+
+    // DE size ?
+    // HL extent ?
+    return esxdrvApiMsg.hl;
 }

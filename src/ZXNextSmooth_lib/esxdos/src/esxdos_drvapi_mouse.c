@@ -2,7 +2,7 @@
 #include "../../general/include/debugging.h"
 #include "../../general/ZXNextSmooths_Z88dkDeps.h"
 
-#include "../include/esxdos_structures.h"
+
 #include "../include/esxdos_drvapi.h"
 
 #include "../include/esxdos_drvapi_mouse.h"
@@ -77,7 +77,7 @@ void mouseEnableAttributeCursor(uint8_t attributeValue)
     esxdrvApiMsg.hl = 0b11100111; // Attribute;
     esxdrvApiMsg.de = 0;
 
-    currentMouseState.errorCode = safe_callDriverApiErrorMsg(esxdrvApiMsg,mouseStringBuffer);
+    currentMouseState.errorCode = safe_callDriverApiErrorMsg(esxdrvApiMsg);
 
     return;
 }
@@ -92,7 +92,7 @@ struct mouseState * mouseGetState(void)
     esxdrvApiMsg.de = 0;
     esxdrvApiMsg.hl = 0;
 
-    currentMouseState.errorCode = safe_callDriverApiErrorMsg(esxdrvApiMsg,mouseStringBuffer);
+    currentMouseState.errorCode = safe_callDriverApiErrorMsg(esxdrvApiMsg);
     
     currentMouseState.x = esxdrvApiMsg.de;
     currentMouseState.y = esxdrvApiMsg.hl;

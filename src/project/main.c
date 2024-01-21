@@ -22,8 +22,8 @@ int main(void)
     printf("\n=START=\n");
 
     // basicBankTesting();
-    //espatTesting();
-    espatTimeTest();
+    espatTesting();
+    //espatTimeTest();
 
     // bankTesting();
 
@@ -42,15 +42,22 @@ int main(void)
     return 0;
 }
 
-
 static nethandle myNetHandle = 0;
 static char connectionString[] = "TCP,172.16.1.112,1234";
 void espatTesting(void)
 {
     espat_DriverInstall();
+    //setOutputBufferMode(myNetHandle, 1);
     //myNetHandle = espat_OpenConnection(connectionString);
     myNetHandle = espat_OpenTCPConnection("172.16.1.112",1234);
     
+    
+    
+    //getChannelValues();
+    //netWrite(myNetHandle,connectionString,sizeof(connectionString));
+    //nos_StreamSize(DRIVERID_espat,myNetHandle);
+
+
     espat_testSend(myNetHandle);
 
     z80_delay_ms(250);
