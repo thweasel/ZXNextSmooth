@@ -133,59 +133,6 @@ uint16_t uninstallDriver(char *driverName)
     return driverFileAction(driverName, DRIVERFILEACTION_UNLOAD);
 }
 
-uint8_t DUMMY_callDriverApi(struct esx_drvapi *driverApiCall)
-{
-    DEBUG_FUNCTIONCALL("\nDUMMY_callDriverApi(*driverApiCall) ");
-    DEBUG_DRIVERAPI(driverApiCall, false);
-    int result = 0; // esx_m_drvapi(driverApiCall);
-    DEBUG_DRIVERAPI(driverApiCall, true);
-    return result;
-}
-
-
-uint8_t callDriverApi(struct esx_drvapi *driverApiCall)
-{
-    DEBUG_FUNCTIONCALL("\ncallDriverApi(* %04x) ", driverApiCall);
-    DEBUG_DRIVERAPI(driverApiCall, false);
-    int result = esx_m_drvapi(driverApiCall);
-    DEBUG_DRIVERAPI(driverApiCall, true);
-    return result;
-}
-
-uint8_t safe_callDriverApi(struct esx_drvapi *driverApiCall)
-{
-    if (NULL == driverApiCall)
-    {
-        DEBUG_MSG("\nsafe_callDriverApi() NULL call");
-        return 255;
-    }
-    return callDriverApi(driverApiCall);
-}
-
-uint8_t callDriverApiErrorMsg(struct esx_drvapi *driverApiCall)
-{
-    DEBUG_FUNCTIONCALL("\ncallDriverApiErrorMsg(* %04x) ", driverApiCall);
-    DEBUG_DRIVERAPI(driverApiCall, false);
-
-    esxdos_clearErrorCodes();
-    uint8_t result = esx_m_drvapi(driverApiCall);
-    DEBUG_DRIVERAPI(driverApiCall, true);
-
-    if (errno > 1)
-    {
-        esx_m_geterr(errno, lastEsxDos_ErrorMessage);
-        printf("\n  ERRNO: %03u, %s", errno, lastEsxDos_ErrorMessage);
-    }
-
-    if (result > 0)
-    {
-        esx_m_geterr(result, lastEsxDos_ErrorMessage);
-        DEBUG_MSG("\n  RESULT: %03u, %s", result, lastEsxDos_ErrorMessage);
-    }
-
-    return result;
-}
-
 void callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl)
 {
     DEBUG_FUNCTIONCALL("\n callDriver(driver %03u, function %03u, DE %05u, HL %05u) ", driver, function, de, hl);
@@ -216,18 +163,6 @@ void callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl)
     return result;
 
 
-}
-
-
-uint8_t safe_callDriverApiErrorMsg(struct esx_drvapi *driverApiCall)
-{
-    if (NULL == driverApiCall)
-    {
-        DEBUG_MSG("\nsafe_callDriverApi() NULL call");
-        return 255;
-    }
-
-    return callDriverApiErrorMsg(driverApiCall);
 }
 
 //
@@ -297,20 +232,14 @@ void openChannelOnStream (char channel, uint8_t streamNumber)
 void nos_OutputChar(driverID driver, channel handle, char c) // 0xFB
 {
     DEBUG_FUNCTIONCALL("\n nos_OutputChar(driver %03u, handle %03u, c %c)", driver, handle, c);
-
     callDriver(driver,NOS_OutputChar, (handle << 8) + c, 0);
-
     return;
 }
 
 char nos_InputChar(driverID driver, channel handle) // 0xFC
 {
     DEBUG_FUNCTIONCALL("\n nos_InputChar(driver %03u, handle %03u)", driver, handle);
-    esxdrvApiMsg.call.driver = driver;
-    esxdrvApiMsg.call.function = NOS_OutputChar;
-    esxdrvApiMsg.de = (handle << 8);
-    esxdrvApiMsg.hl = 0;
-    safe_callDriverApiErrorMsg(esxdrvApiMsg);
+    callDriver(driver, NOS_OutputChar,(handle << 8),0);
     return esxdrvApiMsg.de;
 }
 
@@ -318,11 +247,7 @@ uint16_t nos_StreamSize(driverID driver, channel handle) // 0xFF
 {
     DEBUG_FUNCTIONCALL("\n nos_StreamSize(driver %03u, handle %03u)", driver, handle);
     // D handle
-    esxdrvApiMsg.call.driver = driver;
-    esxdrvApiMsg.call.function = NOS_Open;
-    esxdrvApiMsg.de = (handle << 8);
-    esxdrvApiMsg.hl = 0;
-    safe_callDriverApiErrorMsg(esxdrvApiMsg); // calls > esx_m_drvapi(esxdrvApiMsg);
+    callDriver(driver, NOS_GetStrExtent,(handle << 8),0);
 
     // DE size ?
     // HL extent ?

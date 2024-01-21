@@ -69,16 +69,9 @@ void mouseInstallDriver(void)
 
 void mouseEnableAttributeCursor(uint8_t attributeValue)
 {
-    DEBUG_FUNCTIONCALL("\nmouseEnableAttributeCursor(attributeValue %s)",byteAsBinaryString(attributeValue));
-    
-    // Driver replies in the structure, so you need to re-populate before calling again
-    esxdrvApiMsg.call.driver = MOUSEDRV_DRIVERID;
-    esxdrvApiMsg.call.function = MOUSEDRV_FUNCTION_SETCURSORATTRIBUTE;
-    esxdrvApiMsg.hl = 0b11100111; // Attribute;
-    esxdrvApiMsg.de = 0;
+    DEBUG_FUNCTIONCALL("\nmouseEnableAttributeCursor(attributeValue %s)",byteAsBinaryString(attributeValue));  
 
-    currentMouseState.errorCode = safe_callDriverApiErrorMsg(esxdrvApiMsg);
-
+    callDriver(MOUSEDRV_DRIVERID,MOUSEDRV_FUNCTION_SETCURSORATTRIBUTE,0, 0b11100111);
     return;
 }
 
@@ -87,12 +80,8 @@ struct mouseState * mouseGetState(void)
     DEBUG_FUNCTIONCALL("\nmouseGetState()");
     
     // Driver replies in the structure, so you need to re-populate before calling again
-    esxdrvApiMsg.call.driver = MOUSEDRV_DRIVERID;
-    esxdrvApiMsg.call.function = MOUSEDRV_FUNCTION_GETMOUSESTATE;
-    esxdrvApiMsg.de = 0;
-    esxdrvApiMsg.hl = 0;
 
-    currentMouseState.errorCode = safe_callDriverApiErrorMsg(esxdrvApiMsg);
+    callDriver(MOUSEDRV_DRIVERID,MOUSEDRV_FUNCTION_GETMOUSESTATE,0,0);
     
     currentMouseState.x = esxdrvApiMsg.de;
     currentMouseState.y = esxdrvApiMsg.hl;
