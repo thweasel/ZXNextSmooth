@@ -136,14 +136,14 @@ uint16_t uninstallDriver(char *driverName)
 void callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl)
 {
     DEBUG_FUNCTIONCALL("\n callDriver(driver %03u, function %03u, DE %05u, HL %05u) ", driver, function, de, hl);
-    
+
     esxdrvApiMsg.call.driver = driver;
     esxdrvApiMsg.call.function = function;
     esxdrvApiMsg.de = de;
     esxdrvApiMsg.hl = hl;
-    
+
     esxdos_clearErrorCodes();
-    
+
     DEBUG_DRIVERAPI(esxdrvApiMsg, false);
     uint8_t result = esx_m_drvapi(esxdrvApiMsg);
     DEBUG_DRIVERAPI(esxdrvApiMsg, true);
@@ -161,8 +161,6 @@ void callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl)
     }
 
     return result;
-
-
 }
 
 //
@@ -232,14 +230,14 @@ void openChannelOnStream (char channel, uint8_t streamNumber)
 void nos_OutputChar(driverID driver, channel handle, char c) // 0xFB
 {
     DEBUG_FUNCTIONCALL("\n nos_OutputChar(driver %03u, handle %03u, c %c)", driver, handle, c);
-    callDriver(driver,NOS_OutputChar, (handle << 8) + c, 0);
+    callDriver(driver, NOS_OutputChar, (handle << 8) + c, 0);
     return;
 }
 
 char nos_InputChar(driverID driver, channel handle) // 0xFC
 {
     DEBUG_FUNCTIONCALL("\n nos_InputChar(driver %03u, handle %03u)", driver, handle);
-    callDriver(driver, NOS_OutputChar,(handle << 8),0);
+    callDriver(driver, NOS_OutputChar, (handle << 8), 0);
     return esxdrvApiMsg.de;
 }
 
@@ -247,8 +245,11 @@ uint16_t nos_StreamSize(driverID driver, channel handle) // 0xFF
 {
     DEBUG_FUNCTIONCALL("\n nos_StreamSize(driver %03u, handle %03u)", driver, handle);
     // D handle
-    callDriver(driver, NOS_GetStrExtent,(handle << 8),0);
-
+    callDriver(driver, NOS_GetStrExtent, (handle << 8), 0);
+    if (esxdrvApiMsg.hl > 0)
+    {
+        printf("\n Stream contains: de %05u hl %05u", esxdrvApiMsg.de, esxdrvApiMsg.hl);
+    }
     // DE size ?
     // HL extent ?
     return esxdrvApiMsg.hl;

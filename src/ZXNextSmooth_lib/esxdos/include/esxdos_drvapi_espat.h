@@ -20,10 +20,10 @@ bytesWritten netWrite(fileHandle openHandle, void *dataToWrite, size_t numberOfB
 void espat_testSend(nethandle myNetHandle);
 
 void setDriverCurrentChannel(uint16_t channel);
-void getChannelValues(void);
+void getChannelValues(channel handle);
 void setCMDIPDvalues(void);
 
 void getLinkIDfromHandle(nethandle handle);
 void setOutputBufferMode(nethandle channel, uint8_t mode);
-void setIPDdetect(void);
+void setIPDdetect(channel handle);
 #endif

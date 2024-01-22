@@ -74,21 +74,21 @@ static char espat_sysfile[] = "/nextzxos/espat.sys";
 
 void espat_setBaud(void) // 0x09 NEAT_SetBaudRate
 {
-    DEBUG_FUNCTIONCALL("\n\n espat_setBaud(void)");
+    DEBUG_FUNCTIONCALL("\n espat_setBaud(void)");
     callDriver(DRIVERID_espat, NEAT_SetBaudRate, 0, 0);
     return;
 }
 
 void espat_setTimeouts(void) // 0x05 NEAT_SetTimeouts
 {
-    DEBUG_FUNCTIONCALL("\n\n espat_setTimeouts(void)");
+    DEBUG_FUNCTIONCALL("\n espat_setTimeouts(void)");
     callDriver(DRIVERID_espat, NEAT_SetTimeouts, 96, 1024);
     return;
 }
 
 void espat_loadEspatSys(void) // 0x01 NEAT_Deprecated
 {
-    DEBUG_FUNCTIONCALL("\n\n espat_loadEspatSys(void) \n FILENAME>> %s", espat_sysfile);
+    DEBUG_FUNCTIONCALL("\n espat_loadEspatSys(void) \n FILENAME>> %s", espat_sysfile);
 
     basicBankID sysBank = manage8Banks_allocateBasicBank(); // TODO -- MMU operations
     nextos_saveBasicBankSlotMMU(4);
@@ -112,7 +112,7 @@ void espat_loadEspatSys(void) // 0x01 NEAT_Deprecated
 // This should have a counter function to remove buffers (0x07)
 void espat_addBufferMemoryBank(void) // 0x06 NEAT_AddBank
 {                                    // This is going to be deprecated in BETA1 / RC1
-    DEBUG_FUNCTIONCALL("\n\n espat_setMemoryBank(void)");
+    DEBUG_FUNCTIONCALL("\n espat_setMemoryBank(void)");
 
     // We need 2 8K banks consecutively (16K), double grab and store the second bank ID
     basicBankID dataBuffer = manage8Banks_allocateBasicBank(); // TODO -- MMU operations
@@ -123,7 +123,7 @@ void espat_addBufferMemoryBank(void) // 0x06 NEAT_AddBank
 
 void espat_DriverInstall(void)
 {
-    DEBUG_FUNCTIONCALL("\n\n espatDriverInstall(void)");
+    DEBUG_FUNCTIONCALL("\n espatDriverInstall(void)");
     installDriver("ESPAT.drv");
 
     espat_loadEspatSys();
@@ -132,7 +132,7 @@ void espat_DriverInstall(void)
     espat_setBaud();
     espat_setTimeouts();
 
-    DEBUG_MSG("\n\nDRIVER INSTALLED A-OK\n\n");
+    DEBUG_MSG("\nDRIVER INSTALLED A-OK\n");
 
     return;
 }
@@ -180,7 +180,7 @@ nethandle espat_OpenTCPConnection(char *addr, networkPort port)
 
 void espat_SendChar(nethandle handle, char c) // 0xFB NOS_OutputChar
 {
-    DEBUG_FUNCTIONCALL("\n\n espat_SendChar(handle %03u, char %c)", handle, c);
+    DEBUG_FUNCTIONCALL("\n espat_SendChar(handle %03u, char %c)", handle, c);
 
     nos_OutputChar(DRIVERID_espat, handle, c);
 
@@ -212,21 +212,21 @@ void setDriverCurrentChannel(uint16_t channel) // 0x02 NEAT_SetCurChan
     return;
 }
 
-void getChannelValues(void) // 0x03 NEAT_GetChanVals
+void getChannelValues(channel handle) // 0x03 NEAT_GetChanVals
 {
     DEBUG_FUNCTIONCALL("\n getChannelValues(void)");
     // Set the current Channel with 0x02
     // DE channel or 0 for current channel
-
-    callDriver(DRIVERID_espat, NEAT_GetChanVals, 0, 0);
+    callDriver(DRIVERID_espat, NEAT_GetChanVals, handle, 0);
+    driverApiToConsole(esxdrvApiMsg,true);
     return;
 
     // DE and HL are input and output positions on the esp IPD read buffer (@49152)
 }
 
 void setCMDIPDvalues(void) // 0x04 NEAT_SetChanVals
-{                          // Set the current Channel with 0x02
-
+{                          
+    // Set the current Channel with 0x02
     callDriver(DRIVERID_espat, NEAT_SetChanVals, 0, 0);
     return;
 }
@@ -246,12 +246,12 @@ void setOutputBufferMode(nethandle channel, uint8_t mode) // 0x0A NEAT_SetBuffMo
     return; // BC contains the linkID
 }
 
-void setIPDdetect(void) // 0x0B NEAT_ProcessCMD
+void setIPDdetect(channel handle) // 0x0B NEAT_ProcessCMD
 {
     // DE channel 0 default (IPD channel only)
     // HL 0x08 disable (0x00 enable)
 
-    callDriver(DRIVERID_espat, NEAT_ProcessCMD, 0, 0);
+    callDriver(DRIVERID_espat, NEAT_ProcessCMD, handle, 0);
     return;
 }
 
