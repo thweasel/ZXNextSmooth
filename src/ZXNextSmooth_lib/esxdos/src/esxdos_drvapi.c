@@ -133,7 +133,7 @@ uint16_t uninstallDriver(char *driverName)
     return driverFileAction(driverName, DRIVERFILEACTION_UNLOAD);
 }
 
-void callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl)
+uint8_t callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl)
 {
     DEBUG_FUNCTIONCALL("\n callDriver(driver %03u, function %03u, DE %05u, HL %05u) ", driver, function, de, hl);
 

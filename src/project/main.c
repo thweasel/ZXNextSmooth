@@ -8,12 +8,12 @@ void bankTesting(void);
 void basicBankTesting(void);
 void mouseTesting(void);
 void espatTesting(void);
-void espatTimeTest(void);
+void espatTCPbinTest(void);
 
 // int main(int argc, char const *argv[])
 int main(void)
 {
-    ZXN_NEXTREG(REG_TURBO_MODE, 3);
+    ZXN_NEXTREG(REG_TURBO_MODE, 3);  // 28Mhz mode 
     zx_border(PAPER_WHITE);
     zx_cls_attr(PAPER_WHITE);
     zx_cls_pix(INK_BLACK);
@@ -24,7 +24,7 @@ int main(void)
     // basicBankTesting();
 
     // espatTesting();
-    espatTimeTest();
+    espatTCPbinTest();
 
     // bankTesting();
 
@@ -63,7 +63,7 @@ void espatTesting(void)
     return;
 }
 
-void espatTimeTest(void)
+void espatTCPbinTest(void)
 {
     espat_DriverInstall();
 

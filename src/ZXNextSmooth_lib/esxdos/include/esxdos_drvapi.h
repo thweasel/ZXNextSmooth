@@ -85,7 +85,7 @@ void driverApiToConsole(struct esx_drvapi *showDriverApiCall, bool returnValue);
 extern uint16_t installDriver(char * driverName);
 extern uint16_t uninstallDriver(char *driverName);
 
-extern void callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl);
+extern uint8_t callDriver(driverID driver, driverFunction function, cpuDE de, cpuHL hl);
 
 //
 //  Generic channel functions

@@ -155,7 +155,10 @@ nethandle espat_OpenConnection(char *connectionString) // 0xF9 NOS_Open
     DEBUG_FUNCTIONCALL("\n espat_OpenConnection( %s )", connectionString);
 
     espat_GetChannel(); // Do this first ...
-    callDriver(DRIVERID_espat, NOS_Open, strlen(connectionString), connectionString);
+    uint8_t result  = callDriver(DRIVERID_espat, NOS_Open, strlen(connectionString), connectionString);
+
+    printf("\n open result: %03u", result);
+    driverApiToConsole(esxdrvApiMsg,true);
 
     return esxdrvApiMsg.call.function; // Driver API returns myNetHandle in Reg C (function);
 }
